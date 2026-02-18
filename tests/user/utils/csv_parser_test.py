@@ -39,6 +39,9 @@ def test_should_parse_csv_stream_correctly_when_all_config_are_set():
                     "style": {"collapse": True, "highlight": False, "top": 2.0},
                 },
             ],
+            "experiment_id": None,
+            "rl_run_id": None,
+            "arm": None,
         },
         {
             "user_email": "userb@example.com",
@@ -49,6 +52,9 @@ def test_should_parse_csv_stream_correctly_when_all_config_are_set():
                     "style": {"collapse": False, "highlight": False, "top": 1.5},
                 }
             ],
+            "experiment_id": None,
+            "rl_run_id": None,
+            "arm": None,
         },
     ]
 

@@ -54,6 +54,8 @@ def create_app(config_object=None):
         from src.user.controller.config_controller import config_blueprint
         from src.user.controller.user_controller import user_blueprint
         from src.analytics.controller.analytics_controller import analytics_blueprint
+        from src.export.controller.export_controller import export_blueprint
+        from src.experiment.controller.experiment_controller import experiment_blueprint
 
         app.register_blueprint(admin_answer_config_blueprint, url_prefix="/admin")
         app.register_blueprint(user_blueprint, url_prefix="/admin")
@@ -65,6 +67,8 @@ def create_app(config_object=None):
         app.register_blueprint(case_blueprint, url_prefix="/api")
         app.register_blueprint(answer_blueprint, url_prefix="/api")
         app.register_blueprint(analytics_blueprint)
+        app.register_blueprint(export_blueprint, url_prefix="/api/v1/export")
+        app.register_blueprint(experiment_blueprint, url_prefix="/api/v1")
 
         register_error_handlers(app)
 

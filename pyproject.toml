@@ -41,7 +41,9 @@ omit = [
     "src/migrations/*",
     "*/model/*",
     "*/__init__.py",
-    "*/config.py"
+    "*/config.py",
+    "src/export/repository/*",
+    "src/experiment/repository/*"
 ]
 
 [tool.coverage.report]

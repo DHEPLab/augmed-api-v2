@@ -44,8 +44,12 @@ from src.common.model.system_config import SystemConfig
 # answer
 from src.answer.model.answer import Answer
 
-# config 
+# config
 from src.configration.model import answer_config
+
+# experiment
+from src.experiment.model.experiment import Experiment
+from src.experiment.model.rl_run import RlRun
 
 
 # this is the Alembic Config object, which provides

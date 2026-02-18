@@ -22,3 +22,6 @@ class Config:
     JWT_REFRESH_TOKEN_EXPIRES = int(
         os.getenv("JWT_REFRESH_TOKEN_EXPIRES", days_to_seconds(3))
     )  # Defaults to 3 days
+
+    # Export API key for service-to-service auth
+    EXPORT_API_KEY = os.getenv("EXPORT_API_KEY")
