@@ -25,3 +25,6 @@ class Config:
 
     # Export API key for service-to-service auth
     EXPORT_API_KEY = os.getenv("EXPORT_API_KEY")
+
+    # CORS origins — comma-separated list, or "*" for all (default)
+    CORS_ORIGINS = os.getenv("CORS_ORIGINS", "*")

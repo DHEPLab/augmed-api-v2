@@ -16,10 +16,16 @@ This documentation is written for:
 
 ## Quick Links
 
+### Deploy
+
+- [One-Click Deploy (Railway)](getting-started/one-click-deploy.md) — Deploy in under 5 minutes, no technical setup required
+- [Self-Hosted Deploy (Docker Compose)](getting-started/self-hosted-deploy.md) — Run on your own machine or server
+- [Development Setup](getting-started/quick-start.md) — Set up a local development environment
+
 ### Getting Started
 
 - [Platform Overview](getting-started/overview.md) — Architecture, how experiments work, key concepts
-- [Quick Start Guide](getting-started/quick-start.md) — Set up a local instance in under an hour
+- [Quick Start Guide](getting-started/quick-start.md) — Set up a local development instance
 - [Terminology Glossary](getting-started/terminology.md) — Definitions of all key terms
 
 ### Researcher Guide
@@ -59,5 +65,6 @@ The production instance of AugMed is available at: [https://augmed1.dhep.org/](h
 ## Repositories
 
 - **Backend API** (this repository): Flask + PostgreSQL
-- **Frontend**: [DHEPLab AugMed Frontend](https://github.com/DHEPLab/augmed-app)
+- **Frontend**: [augmed-app-v2](https://github.com/DHEPLab/augmed-app-v2) (React + TypeScript)
+- **RL Service**: [augmed-rl](https://github.com/DHEPLab/augmed-rl) (FastAPI, Thompson Sampling)
 - **Infrastructure**: [augmed-infra](https://github.com/DHEPLab/augmed-infra) (Terraform, AWS)

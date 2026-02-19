@@ -2,22 +2,27 @@
 
 ## Architecture
 
-AugMed has three main components that work together:
+AugMed has four main components that work together:
 
 ```
 React Frontend  →  Flask API  →  PostgreSQL Database
-(augmed-app)       (augmed-api-v2)  (OMOP CDM + app tables)
+(augmed-app-v2)    (augmed-api-v2)  (OMOP CDM + app tables)
+                       ↑
+                   RL Service
+                   (augmed-rl)
 ```
 
-**React Frontend** (`augmed-app`): The web interface that participants use. It displays clinical case information, manages the review workflow, and submits answers. The frontend communicates with the API over HTTPS using JWT tokens for authentication.
+**React Frontend** (`augmed-app-v2`): The web interface that participants use. It displays clinical case information, manages the review workflow, and submits answers. The frontend communicates with the API over HTTPS using JWT tokens for authentication.
 
 **Flask API** (`augmed-api-v2`): The backend server, written in Python. It handles authentication, retrieves and formats case data, stores participant responses, and records timing analytics. All data access goes through this API — the frontend never touches the database directly.
+
+**RL Service** (`augmed-rl`): The adaptive experimentation service, built with FastAPI. It uses Thompson Sampling to dynamically adjust experimental arm assignments based on participant outcomes. The RL service communicates with the API via the export endpoint to fetch response data and update arm weights. See [Adaptive Experiments](../adaptive-experiments/overview.md) for details.
 
 **PostgreSQL Database**: Stores two categories of data:
 1. **OMOP CDM tables** — the de-identified clinical data (patients, visits, observations, measurements, drug exposures, concept definitions)
 2. **Application tables** — users, experiment configurations, participant responses, and analytics
 
-In production, the database runs on AWS RDS (managed PostgreSQL), the API runs on AWS ECS Fargate (containerized), and the frontend is served separately. See [Deployment](../admin-guide/deployment.md) for infrastructure details.
+The platform can be deployed in several ways — from a one-click Railway template to a full AWS infrastructure. See [Deployment](../admin-guide/deployment.md) for all options.
 
 ## How Experiments Work
 
@@ -45,7 +50,9 @@ Participants log in, see a list of their assigned cases (one at a time, in order
 
 ### 6. Export and Analyze
 
-After data collection, the researcher runs an export script to produce a CSV file containing all responses, linked to demographic and clinical feature data. This CSV is the primary analysis dataset.
+After data collection, the researcher exports data via the export API (`/api/v1/export/`) to produce structured response data linked to demographic and clinical feature data. The export API supports both programmatic access (authenticated with the `EXPORT_API_KEY`) and manual CSV downloads. The RL service also uses this API to fetch outcomes for adaptive arm assignment.
+
+For adaptive experiments, the RL service continuously monitors outcomes and adjusts arm weights using Thompson Sampling. See [Adaptive Experiments](../adaptive-experiments/overview.md) for details.
 
 ## Key Concepts
 
