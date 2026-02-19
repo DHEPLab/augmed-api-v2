@@ -80,6 +80,9 @@ backend.tf
 .envrc
 .coverage
 
+# MkDocs build output
+site/
+
 # participants info
 create_accounts_local.sh
 participants.tsv

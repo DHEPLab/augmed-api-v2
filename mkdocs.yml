@@ -1,0 +1,78 @@
+site_name: AugMed Documentation
+site_description: Clinical case review platform for AI-augmented medical decision-making research
+site_url: https://dheplab.github.io/augmed/
+repo_url: https://github.com/DHEPLab/augmed-api-v2
+repo_name: DHEPLab/augmed-api-v2
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Overview: getting-started/overview.md
+      - Terminology: getting-started/terminology.md
+      - Quick Start: getting-started/quick-start.md
+      - One-Click Deploy: getting-started/one-click-deploy.md
+      - Self-Hosted Deploy: getting-started/self-hosted-deploy.md
+  - Researcher Guide:
+      - Creating Experiments: researcher-guide/creating-experiments.md
+      - Managing Participants: researcher-guide/managing-participants.md
+      - Monitoring Progress: researcher-guide/monitoring-progress.md
+      - Exporting Data: researcher-guide/exporting-data.md
+      - Analyzing Results: researcher-guide/analyzing-results.md
+  - Admin Guide:
+      - Deployment: admin-guide/deployment.md
+      - Database: admin-guide/database.md
+      - Configuration: admin-guide/configuration.md
+      - Troubleshooting: admin-guide/troubleshooting.md
+  - Adaptive Experiments:
+      - Overview: adaptive-experiments/overview.md
+      - Setting Up RL: adaptive-experiments/setting-up-rl.md
+      - Interpreting Results: adaptive-experiments/interpreting-results.md
+  - Guides:
+      - Adapting for Your Study: guides/adapting-for-your-study.md
+  - Reference:
+      - API Reference: reference/api-reference.md
+      - Data Dictionary: reference/data-dictionary.md
+      - Config CSV Format: reference/config-csv-format.md
+      - OMOP Mapping: reference/omop-mapping.md
+  - Examples:
+      - CRC Screening:
+          - Overview: examples/crc-screening/README.md
+          - Terminology: examples/crc-screening/terminology.md
+          - Experiment Config: examples/crc-screening/experiment-config.md
+          - Seed Data: examples/crc-screening/seed-data.md
+          - Deployment Notes: examples/crc-screening/deployment-notes.md

@@ -31,7 +31,8 @@ Write down exactly which BACKGROUND features each arm shows. The available featu
 
 **Note:** Patient Demographics (age and gender) are always shown and cannot be suppressed.
 
-> **Example:** The CRC screening study used Family History (Cancer, Colorectal Cancer, Diabetes, Hypertension) and 18 Medical History features. See [CRC Terminology](../examples/crc-screening/terminology.md) for the complete feature list.
+!!! example
+    The CRC screening study used Family History (Cancer, Colorectal Cancer, Diabetes, Hypertension) and 18 Medical History features. See [CRC Terminology](../examples/crc-screening/terminology.md) for the complete feature list.
 
 ## Step 2: Determine Case Assignments
 
@@ -110,7 +111,8 @@ alice@example.com,13,BACKGROUND.Medical History.Symptom Y: Yes,FALSE,TRUE,
 
 Note that the "no AI" case simply omits the `RISK ASSESSMENT.*` row.
 
-> **Example:** For CRC-specific display config examples with colorectal cancer features, see [CRC Experiment Config](../examples/crc-screening/experiment-config.md).
+!!! example
+    For CRC-specific display config examples with colorectal cancer features, see [CRC Experiment Config](../examples/crc-screening/experiment-config.md).
 
 ### Generating the CSV Programmatically
 
@@ -165,7 +167,8 @@ with open("experiment_config.csv", "w", newline="") as f:
     writer.writerows(rows)
 ```
 
-> **Important:** The value in the path (e.g., `Fatigue: Yes`) must match the patient's actual clinical data. The display config does not transform the data — it selects which features the participant sees, and the value shown to the participant is drawn from the OMOP database. The `: Yes/No` in the path is metadata that gets stored in the answer record's `display_configuration` field, which enables the export script to reconstruct which features were shown and what their values were.
+!!! important
+    The value in the path (e.g., `Fatigue: Yes`) must match the patient's actual clinical data. The display config does not transform the data — it selects which features the participant sees, and the value shown to the participant is drawn from the OMOP database. The `: Yes/No` in the path is metadata that gets stored in the answer record's `display_configuration` field, which enables the export script to reconstruct which features were shown and what their values were.
 
 ## Step 4: Upload the Display Config
 
@@ -176,7 +179,8 @@ curl -X POST https://your-augmed-server/admin/config/upload \
   -F "file=@experiment_config.csv"
 ```
 
-> **Warning:** Uploading a new config **completely replaces all existing display configs**. All previous assignments are deleted. Run uploads carefully, and only after confirming participants have completed their assigned cases or their data has been exported.
+!!! warning
+    Uploading a new config **completely replaces all existing display configs**. All previous assignments are deleted. Run uploads carefully, and only after confirming participants have completed their assigned cases or their data has been exported.
 
 Expected response:
 

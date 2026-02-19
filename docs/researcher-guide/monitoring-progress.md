@@ -115,7 +115,8 @@ WHERE a.answer::text LIKE '%Attention Check%'
    OR a.answer::text LIKE '%just clicking%';
 ```
 
-> **Note:** The attention check is dynamically injected by the API and not stored in `answer_config`. It appears for the 10th, 20th, 30th, etc. case for each participant.
+!!! note
+    The attention check is dynamically injected by the API and not stored in `answer_config`. It appears for the 10th, 20th, 30th, etc. case for each participant.
 
 ## Checking Answer Data
 

@@ -169,7 +169,8 @@ table_recs <- table(df$primary_outcome, df$ai_shown)
 chisq.test(table_recs)
 ```
 
-> **Example:** For CRC-specific analysis code (colonoscopy recommendation rates, screening factor levels), see [CRC Experiment Config](../examples/crc-screening/experiment-config.md).
+!!! example
+    For CRC-specific analysis code (colonoscopy recommendation rates, screening factor levels), see [CRC Experiment Config](../examples/crc-screening/experiment-config.md).
 
 ## Python Examples
 

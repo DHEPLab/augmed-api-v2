@@ -86,7 +86,8 @@ The export CSV has one row per participant-case submission. Rows are sorted by `
 | `user_id` | integer | Stable anonymized participant identifier (SHA-256 hash of email) |
 | `order_id` | integer | Sequential case number for this participant (1 = first case reviewed) |
 
-> **Note:** `user_email` is intentionally not included in the export to protect participant privacy. `user_id` is a stable, consistent identifier that can be used for longitudinal analysis without exposing email addresses.
+!!! note
+    `user_email` is intentionally not included in the export to protect participant privacy. `user_id` is a stable, consistent identifier that can be used for longitudinal analysis without exposing email addresses.
 
 #### Analytics Timing Columns
 
@@ -99,7 +100,8 @@ The export CSV has one row per participant-case submission. Rows are sorted by `
 | `to_submit_secs` | float | Seconds from answer form open to submission (answer time) |
 | `total_duration_secs` | float | Total seconds from case open to submission |
 
-> **Note:** Timing data comes from the `analytics` table. If a participant's timing was not recorded (older data or recording failures), these columns will be empty.
+!!! note
+    Timing data comes from the `analytics` table. If a participant's timing was not recorded (older data or recording failures), these columns will be empty.
 
 #### Demographic Columns
 
@@ -135,7 +137,8 @@ Parallel to each `(shown)` column, there is a corresponding `(value)` column wit
 | `{Category}.{Feature} (value)` | Yes/No | Patient's actual clinical value for this feature |
 | `ai_score (value)` | integer or empty | Numeric AI prediction score |
 
-> **Note:** Value columns contain the patient's ground truth value regardless of whether the feature was shown to the participant. A participant may not have seen a feature (shown = False) but the patient's actual value is still recorded. This allows researchers to analyze how unseen information relates to outcomes.
+!!! note
+    Value columns contain the patient's ground truth value regardless of whether the feature was shown to the participant. A participant may not have seen a feature (shown = False) but the patient's actual value is still recorded. This allows researchers to analyze how unseen information relates to outcomes.
 
 #### Outcome Columns (Participant Responses)
 
@@ -146,7 +149,8 @@ Outcome columns are derived from your answer config (questionnaire). The export 
 | *(study-specific)* | varies | Normalized response values from your questionnaire |
 | `additional_info` | string | Free-text response (if included in your questionnaire) |
 
-> **Example:** The CRC study exported `risk_assessment` (1-5 scale), `confidence_level` (1-3), and `screening_recommendation` (categorical). See [CRC Experiment Config](../examples/crc-screening/experiment-config.md).
+!!! example
+    The CRC study exported `risk_assessment` (1-5 scale), `confidence_level` (1-3), and `screening_recommendation` (categorical). See [CRC Experiment Config](../examples/crc-screening/experiment-config.md).
 
 #### Recruitment Survey Columns (Optional)
 

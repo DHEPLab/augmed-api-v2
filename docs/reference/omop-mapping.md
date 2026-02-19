@@ -39,7 +39,8 @@ Example page config (abbreviated):
 }
 ```
 
-> **Example:** The CRC screening study used `"CRC risk assessments": [45614722]`. See [CRC Terminology](../examples/crc-screening/terminology.md) for all CRC-specific concept mappings.
+!!! example
+    The CRC screening study used `"CRC risk assessments": [45614722]`. See [CRC Terminology](../examples/crc-screening/terminology.md) for all CRC-specific concept mappings.
 
 Each key under a section maps to a list of `observation_concept_id` or `measurement_concept_id` values used to query the clinical data tables.
 
@@ -95,7 +96,8 @@ RISK ASSESSMENT.{Score Label}: {numeric_value}
 
 When a literal score is in the CSV, it takes precedence over the database value.
 
-> **Example:** The CRC study stored scores as `"Colorectal Cancer Score: {value}"` using concept ID `45614722`. See [CRC Terminology](../examples/crc-screening/terminology.md).
+!!! example
+    The CRC study stored scores as `"Colorectal Cancer Score: {value}"` using concept ID `45614722`. See [CRC Terminology](../examples/crc-screening/terminology.md).
 
 ### PATIENT COMPLAINT Section
 
@@ -160,7 +162,8 @@ After building the full data tree, the API applies the display config to prune i
 | 8507 | — | Male gender | Resolved from `person.gender_concept_id` |
 | 8532 | — | Female gender | Resolved from `person.gender_concept_id` |
 
-> **Note:** The concept IDs above are common clinical concepts. AI prediction concept IDs are study-specific and configured in the page config. See [CRC Terminology](../examples/crc-screening/terminology.md) for the concept IDs used in the CRC screening study.
+!!! note
+    The concept IDs above are common clinical concepts. AI prediction concept IDs are study-specific and configured in the page config. See [CRC Terminology](../examples/crc-screening/terminology.md) for the concept IDs used in the CRC screening study.
 
 ## Loading OMOP Data
 

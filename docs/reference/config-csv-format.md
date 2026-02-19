@@ -10,7 +10,8 @@ This document specifies the complete format for the display config CSV file used
 - **Upload endpoint:** `POST /admin/config/upload`
 - **Effect of upload:** Replaces all existing display configs
 
-> **Warning:** Uploading a new file deletes all current display configs before inserting the new ones. Ensure participants have completed their current assignments (or data has been exported) before uploading.
+!!! warning
+    Uploading a new file deletes all current display configs before inserting the new ones. Ensure participants have completed their current assignments (or data has been exported) before uploading.
 
 ## Column Specification
 
@@ -64,9 +65,11 @@ BACKGROUND.Medical History.Symptom X: Yes/No
 BACKGROUND.Social History.Risk Factor: Yes/No
 ```
 
-> **Note:** The `{Value}` (Yes/No) must match the patient's actual clinical data in the OMOP database. If the value in the path does not match what is in the database, the feature may still be shown but the stored display configuration will reflect the path value, not the database value. Always derive values from your OMOP data extract.
+!!! note
+    The `{Value}` (Yes/No) must match the patient's actual clinical data in the OMOP database. If the value in the path does not match what is in the database, the feature may still be shown but the stored display configuration will reflect the path value, not the database value. Always derive values from your OMOP data extract.
 
-> **Example:** The CRC screening study used 4 family history features, 18 medical history features, and 2 social history features. See [CRC Terminology](../examples/crc-screening/terminology.md) for the complete feature list.
+!!! example
+    The CRC screening study used 4 family history features, 18 medical history features, and 2 social history features. See [CRC Terminology](../examples/crc-screening/terminology.md) for the complete feature list.
 
 ### RISK ASSESSMENT Section
 
@@ -88,7 +91,8 @@ Example: `RISK ASSESSMENT.Risk Score: 12`
 
 When this form is used, the API displays the CSV-provided score rather than fetching it from the OMOP observation table.
 
-> **Example:** The CRC study used `RISK ASSESSMENT.CRC risk assessments` and `RISK ASSESSMENT.Colorectal Cancer Score: {value}`. See [CRC Experiment Config](../examples/crc-screening/experiment-config.md).
+!!! example
+    The CRC study used `RISK ASSESSMENT.CRC risk assessments` and `RISK ASSESSMENT.Colorectal Cancer Score: {value}`. See [CRC Experiment Config](../examples/crc-screening/experiment-config.md).
 
 ### PHYSICAL EXAMINATION Section
 
@@ -125,7 +129,8 @@ A numeric value (float) that pins this item to the "Key Findings" panel at the t
 
 Leave blank to not pin the item.
 
-> **Note:** The `Top` column cannot be set on top-level paths (paths with fewer than two dot-separated segments). Attempting to do so will cause a validation error.
+!!! note
+    The `Top` column cannot be set on top-level paths (paths with fewer than two dot-separated segments). Attempting to do so will cause a validation error.
 
 ## Complete Example
 
@@ -162,7 +167,8 @@ bob@example.com,2,BACKGROUND.Medical History.Symptom Y: No,FALSE,TRUE,
 
 > Arm B is identical to Arm A except the `RISK ASSESSMENT.AI Predictions` rows are omitted.
 
-> **Example:** For CRC-specific display config examples with colorectal cancer features, see [CRC Experiment Config](../examples/crc-screening/experiment-config.md).
+!!! example
+    For CRC-specific display config examples with colorectal cancer features, see [CRC Experiment Config](../examples/crc-screening/experiment-config.md).
 
 ## Validation Errors
 
