@@ -26,7 +26,7 @@ services:
         fromService:
           name: augmed-api
           type: web
-          envVarKey: RENDER_INTERNAL_HOSTNAME
+          envVarKey: RENDER_EXTERNAL_URL
       - key: AUGMED_RL_AUGMED_API_KEY
         fromService:
           name: augmed-api
@@ -43,7 +43,7 @@ services:
         fromService:
           name: augmed-api
           type: web
-          envVarKey: RENDER_INTERNAL_HOSTNAME
+          envVarKey: RENDER_EXTERNAL_URL
       - key: PORT
         value: "8080"
 

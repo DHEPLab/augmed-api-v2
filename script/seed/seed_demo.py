@@ -17,7 +17,6 @@ Demo credentials:
     Researcher: researcher@demo.augmed.org / augmed-demo
 """
 
-import uuid
 from datetime import date, datetime
 
 from src import create_app, db
@@ -349,7 +348,7 @@ def _seed_system_config():
 
 def _seed_answer_config():
     """Insert a demo questionnaire config."""
-    config_id = str(uuid.uuid4())
+    config_id = "demo-answer-config"
     questionnaire = [
         {
             "type": "single_choice",
@@ -376,6 +375,7 @@ def _seed_answer_config():
         db.text("""
             INSERT INTO answer_config (id, config, created_timestamp)
             VALUES (:id, :config, :ts)
+            ON CONFLICT (id) DO NOTHING
         """),
         {"id": config_id, "config": json.dumps(questionnaire), "ts": datetime.utcnow()},
     )

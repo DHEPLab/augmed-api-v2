@@ -22,6 +22,10 @@ COPY . .
 COPY entrypoint.sh /usr/src/app/entrypoint.sh
 RUN chmod +x /usr/src/app/entrypoint.sh
 
+# Run as non-root user for security
+RUN useradd --create-home appuser && chown -R appuser:appuser /usr/src/app
+USER appuser
+
 # Make port 5000 available to the world outside this container
 EXPOSE 5000
 

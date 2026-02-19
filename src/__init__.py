@@ -25,9 +25,9 @@ def create_app(config_object=None):
         # TODO: load from object not file ref.
         app.config.from_object("src.config.Config")
 
-    # Enable CORS — configurable via CORS_ORIGINS env var (default: "*")
-    cors_origins = app.config.get("CORS_ORIGINS", "*")
-    if isinstance(cors_origins, str) and cors_origins != "*":
+    # Enable CORS — configurable via CORS_ORIGINS env var
+    cors_origins = app.config.get("CORS_ORIGINS", "http://localhost:3000,http://localhost:8080")
+    if isinstance(cors_origins, str):
         cors_origins = [o.strip() for o in cors_origins.split(",")]
     CORS(
         app,
