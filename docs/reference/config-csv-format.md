@@ -50,58 +50,45 @@ The `{Value}` at the end (after `: `) specifies the patient's actual clinical va
 
 **Available Categories and Features:**
 
+The specific categories and features depend on your study's page configuration (`page_config` in `system_config`). The general pattern is:
+
 ```
 BACKGROUND.Patient Demographics        (always shown — cannot be controlled by path config)
+BACKGROUND.{Category}.{Feature}: Yes/No
+```
 
-BACKGROUND.Family History.Cancer: Yes/No
-BACKGROUND.Family History.Colorectal Cancer: Yes/No
-BACKGROUND.Family History.Diabetes: Yes/No
-BACKGROUND.Family History.Hypertension: Yes/No
-
-BACKGROUND.Medical History.Abdominal Pain/Distension: Yes/No
-BACKGROUND.Medical History.Anxiety and/or Depression: Yes/No
-BACKGROUND.Medical History.Asthma: Yes/No
-BACKGROUND.Medical History.Blood Stained Stool: Yes/No
-BACKGROUND.Medical History.Chronic Diarrhea: Yes/No
-BACKGROUND.Medical History.Constipation: Yes/No
-BACKGROUND.Medical History.Diabetes: Yes/No
-BACKGROUND.Medical History.Fatigue: Yes/No
-BACKGROUND.Medical History.Headache: Yes/No
-BACKGROUND.Medical History.Hyperlipidemia: Yes/No
-BACKGROUND.Medical History.Hypertension: Yes/No
-BACKGROUND.Medical History.Hypothyroidism: Yes/No
-BACKGROUND.Medical History.Irritable Bowel Syndrome: Yes/No
-BACKGROUND.Medical History.Migraines: Yes/No
-BACKGROUND.Medical History.Osteoarthritis: Yes/No
-BACKGROUND.Medical History.Rectal Bleeding: Yes/No
-BACKGROUND.Medical History.Shortness of Breath: Yes/No
-BACKGROUND.Medical History.Tenderness Abdomen: Yes/No
-
-BACKGROUND.Social History.Smoke: Yes/No
-BACKGROUND.Social History.Alcohol: Yes/No
+For example:
+```
+BACKGROUND.Family History.Condition A: Yes/No
+BACKGROUND.Medical History.Symptom X: Yes/No
+BACKGROUND.Social History.Risk Factor: Yes/No
 ```
 
 > **Note:** The `{Value}` (Yes/No) must match the patient's actual clinical data in the OMOP database. If the value in the path does not match what is in the database, the feature may still be shown but the stored display configuration will reflect the path value, not the database value. Always derive values from your OMOP data extract.
 
+> **Example:** The CRC screening study used 4 family history features, 18 medical history features, and 2 social history features. See [CRC Terminology](../examples/crc-screening/terminology.md) for the complete feature list.
+
 ### RISK ASSESSMENT Section
 
-Shows the AI-generated colorectal cancer risk score.
+Shows the AI-generated prediction for the patient.
 
 ```
-RISK ASSESSMENT.CRC risk assessments
+RISK ASSESSMENT.{Your AI Section Name}
 ```
 
-No `: Yes/No` suffix. This is a toggle — including this path shows the AI score section; omitting it hides it.
+No `: Yes/No` suffix. This is a toggle — including this path shows the AI score section; omitting it hides it. The section name must match a key in your `page_config`.
 
 **Alternative format for providing the score directly in the CSV** (bypasses database lookup):
 
 ```
-RISK ASSESSMENT.Colorectal Cancer Score: {numeric_value}
+RISK ASSESSMENT.{Score Label}: {numeric_value}
 ```
 
-Example: `RISK ASSESSMENT.Colorectal Cancer Score: 12`
+Example: `RISK ASSESSMENT.Risk Score: 12`
 
 When this form is used, the API displays the CSV-provided score rather than fetching it from the OMOP observation table.
+
+> **Example:** The CRC study used `RISK ASSESSMENT.CRC risk assessments` and `RISK ASSESSMENT.Colorectal Cancer Score: {value}`. See [CRC Experiment Config](../examples/crc-screening/experiment-config.md).
 
 ### PHYSICAL EXAMINATION Section
 
@@ -144,36 +131,38 @@ Leave blank to not pin the item.
 
 A two-arm experiment:
 
-**Arm A: AI score shown, selected features**
+**Arm A: AI prediction shown, selected features**
 
 ```csv
 User,Case No.,Path,Collapse,Highlight,Top
-alice@example.com,1,BACKGROUND.Family History.Colorectal Cancer: No,FALSE,TRUE,
-alice@example.com,1,BACKGROUND.Family History.Cancer: No,FALSE,TRUE,
-alice@example.com,1,BACKGROUND.Medical History.Rectal Bleeding: Yes,FALSE,TRUE,1
-alice@example.com,1,BACKGROUND.Medical History.Blood Stained Stool: No,FALSE,TRUE,
-alice@example.com,1,BACKGROUND.Medical History.Fatigue: Yes,FALSE,TRUE,
-alice@example.com,1,RISK ASSESSMENT.CRC risk assessments,FALSE,TRUE,
-alice@example.com,2,BACKGROUND.Family History.Colorectal Cancer: Yes,FALSE,TRUE,
-alice@example.com,2,BACKGROUND.Medical History.Constipation: Yes,FALSE,TRUE,1
-alice@example.com,2,BACKGROUND.Medical History.Chronic Diarrhea: No,FALSE,TRUE,
-alice@example.com,2,RISK ASSESSMENT.CRC risk assessments,FALSE,TRUE,
+alice@example.com,1,BACKGROUND.Family History.Condition A: No,FALSE,TRUE,
+alice@example.com,1,BACKGROUND.Family History.Condition B: No,FALSE,TRUE,
+alice@example.com,1,BACKGROUND.Medical History.Symptom X: Yes,FALSE,TRUE,1
+alice@example.com,1,BACKGROUND.Medical History.Symptom Y: No,FALSE,TRUE,
+alice@example.com,1,BACKGROUND.Medical History.Symptom Z: Yes,FALSE,TRUE,
+alice@example.com,1,RISK ASSESSMENT.AI Predictions,FALSE,TRUE,
+alice@example.com,2,BACKGROUND.Family History.Condition A: Yes,FALSE,TRUE,
+alice@example.com,2,BACKGROUND.Medical History.Symptom X: Yes,FALSE,TRUE,1
+alice@example.com,2,BACKGROUND.Medical History.Symptom Y: No,FALSE,TRUE,
+alice@example.com,2,RISK ASSESSMENT.AI Predictions,FALSE,TRUE,
 ```
 
-**Arm B: No AI score**
+**Arm B: No AI prediction**
 
 ```csv
-bob@example.com,1,BACKGROUND.Family History.Colorectal Cancer: No,FALSE,TRUE,
-bob@example.com,1,BACKGROUND.Family History.Cancer: No,FALSE,TRUE,
-bob@example.com,1,BACKGROUND.Medical History.Rectal Bleeding: Yes,FALSE,TRUE,1
-bob@example.com,1,BACKGROUND.Medical History.Blood Stained Stool: No,FALSE,TRUE,
-bob@example.com,1,BACKGROUND.Medical History.Fatigue: Yes,FALSE,TRUE,
-bob@example.com,2,BACKGROUND.Family History.Colorectal Cancer: Yes,FALSE,TRUE,
-bob@example.com,2,BACKGROUND.Medical History.Constipation: Yes,FALSE,TRUE,1
-bob@example.com,2,BACKGROUND.Medical History.Chronic Diarrhea: No,FALSE,TRUE,
+bob@example.com,1,BACKGROUND.Family History.Condition A: No,FALSE,TRUE,
+bob@example.com,1,BACKGROUND.Family History.Condition B: No,FALSE,TRUE,
+bob@example.com,1,BACKGROUND.Medical History.Symptom X: Yes,FALSE,TRUE,1
+bob@example.com,1,BACKGROUND.Medical History.Symptom Y: No,FALSE,TRUE,
+bob@example.com,1,BACKGROUND.Medical History.Symptom Z: Yes,FALSE,TRUE,
+bob@example.com,2,BACKGROUND.Family History.Condition A: Yes,FALSE,TRUE,
+bob@example.com,2,BACKGROUND.Medical History.Symptom X: Yes,FALSE,TRUE,1
+bob@example.com,2,BACKGROUND.Medical History.Symptom Y: No,FALSE,TRUE,
 ```
 
-> Arm B is identical to Arm A except the `RISK ASSESSMENT.CRC risk assessments` rows are omitted.
+> Arm B is identical to Arm A except the `RISK ASSESSMENT.AI Predictions` rows are omitted.
+
+> **Example:** For CRC-specific display config examples with colorectal cancer features, see [CRC Experiment Config](../examples/crc-screening/experiment-config.md).
 
 ## Validation Errors
 

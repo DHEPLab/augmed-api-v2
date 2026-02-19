@@ -2,9 +2,11 @@
 
 ## What is AugMed?
 
-AugMed is a clinical case review platform built for the UNC-Chapel Hill DHEP Lab as part of the NIH AIM-AHEAD project. It supports research on AI-augmented medical decision-making by presenting clinicians with de-identified patient cases drawn from real electronic health record data (structured in the OMOP Common Data Model) and collecting their diagnostic assessments, risk ratings, and screening recommendations.
+AugMed is a clinical case review platform for research on AI-augmented medical decision-making. It presents clinicians with de-identified patient cases drawn from electronic health record data (structured in the OMOP Common Data Model) and collects their diagnostic assessments, risk ratings, and clinical recommendations.
 
-Each participant sees a carefully controlled subset of clinical information — determined by the researcher's experimental design — which may or may not include an AI-generated colorectal cancer (CRC) risk score. This controlled information disclosure is the core experimental mechanism: by varying which features each participant sees, researchers can measure how AI assistance, clinical history details, and other factors influence clinical judgment.
+Each participant sees a carefully controlled subset of clinical information — determined by the researcher's experimental design — which may or may not include AI-generated predictions. This controlled information disclosure is the core experimental mechanism: by varying which features each participant sees, researchers can measure how AI assistance, clinical history details, and other factors influence clinical judgment.
+
+AugMed is domain-agnostic: any clinical scenario that can be represented in OMOP CDM format can be studied on the platform. See [Adapting AugMed for Your Study](guides/adapting-for-your-study.md) for how to configure the platform for your clinical domain.
 
 ## Who This Documentation Is For
 
@@ -55,6 +57,14 @@ This documentation is written for:
 - [Data Dictionary](reference/data-dictionary.md) — Every table and column with types and descriptions
 - [Config CSV Format](reference/config-csv-format.md) — Detailed specification for display config uploads
 - [OMOP Mapping](reference/omop-mapping.md) — How OMOP concept IDs map to displayed clinical features
+
+### Guides
+
+- [Adapting AugMed for Your Study](guides/adapting-for-your-study.md) — Step-by-step guide for configuring AugMed for a new clinical domain
+
+### Examples
+
+- [CRC Screening Study](examples/crc-screening/README.md) — Complete worked example from the AIM-AHEAD colorectal cancer screening study
 
 ---
 

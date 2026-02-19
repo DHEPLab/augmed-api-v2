@@ -27,7 +27,7 @@ Example page config (abbreviated):
       "Alcohol": [4029833]
     },
     "Medical History": [1008364],
-    "CRC risk assessments": [45614722]
+    "AI Predictions": [your_ai_concept_id]
   },
   "PATIENT COMPLAINT": {
     "Chief Complaint": [38000282, 38000283]
@@ -38,6 +38,8 @@ Example page config (abbreviated):
   }
 }
 ```
+
+> **Example:** The CRC screening study used `"CRC risk assessments": [45614722]`. See [CRC Terminology](../examples/crc-screening/terminology.md) for all CRC-specific concept mappings.
 
 Each key under a section maps to a list of `observation_concept_id` or `measurement_concept_id` values used to query the clinical data tables.
 
@@ -70,28 +72,30 @@ WHERE visit_occurrence_id = :case_id
 - `qualifier_concept_id` → prepended to the value (e.g., "Yes : Fatigue")
 - `unit_concept_id` → appended to the value
 
-**CRC Risk Assessments (AI Score):**
+**AI Predictions (AI Score):**
 
-Special handling via concept ID `45614722`:
+Special handling for the AI prediction concept ID (configured in your page config):
 
 ```sql
 SELECT value_as_string, value_as_number
 FROM observation
 WHERE visit_occurrence_id = :case_id
-  AND observation_concept_id = 45614722
+  AND observation_concept_id = :your_ai_concept_id
 ORDER BY observation_datetime DESC
 LIMIT 1
 ```
 
-The AI score is stored as `"Colorectal Cancer Score: {value}"` in `value_as_string`. The API transforms this to `"Predicted Colorectal Cancer Score: {value}"` for display.
+The AI score format depends on your study configuration. The API reads `value_as_string` and displays it with a "Predicted" prefix.
 
 Alternatively, the score can be provided directly in the display config CSV path:
 
 ```
-RISK ASSESSMENT.Colorectal Cancer Score: 12
+RISK ASSESSMENT.{Score Label}: {numeric_value}
 ```
 
 When a literal score is in the CSV, it takes precedence over the database value.
+
+> **Example:** The CRC study stored scores as `"Colorectal Cancer Score: {value}"` using concept ID `45614722`. See [CRC Terminology](../examples/crc-screening/terminology.md).
 
 ### PATIENT COMPLAINT Section
 
@@ -140,13 +144,12 @@ After building the full data tree, the API applies the display config to prune i
 
 3. **PATIENT COMPLAINT:** Always shown in full (not filtered by display config).
 
-4. **AI Score:** Only shown if `RISK ASSESSMENT.CRC risk assessments` or `RISK ASSESSMENT.Colorectal Cancer Score: {value}` is in the path config.
+4. **AI Score:** Only shown if the corresponding `RISK ASSESSMENT.*` path is in the path config.
 
 ## Key Concept IDs
 
 | Concept ID | Domain | Used As | Display |
 |-----------|--------|---------|---------|
-| 45614722 | Observation | AI CRC risk score | Fetched from `observation.value_as_string` |
 | 4167217 | Observation | Family history observation type | Groups family history entries |
 | 1008364 | Observation | Medical history observation type | Groups medical history entries |
 | 38000282 | Observation | Chief complaint type | Chief complaint label |
@@ -157,7 +160,7 @@ After building the full data tree, the API applies the display config to prune i
 | 8507 | — | Male gender | Resolved from `person.gender_concept_id` |
 | 8532 | — | Female gender | Resolved from `person.gender_concept_id` |
 
-> **Note:** The concept IDs listed above reflect the configuration used in the AIM-AHEAD pilot study. Your `page_config` may use different concept IDs depending on your OMOP data.
+> **Note:** The concept IDs above are common clinical concepts. AI prediction concept IDs are study-specific and configured in the page config. See [CRC Terminology](../examples/crc-screening/terminology.md) for the concept IDs used in the CRC screening study.
 
 ## Loading OMOP Data
 

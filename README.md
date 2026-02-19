@@ -1,6 +1,6 @@
 # The AugMed App (Backend API)
 
-AugMed is a web application, built for the UNC-Chapel Hill DHEP Lab, that allows the lab to collect data from participants in a user-friendly way. The app is designed to be used on any devices, and it allows participants to answer questions about their judgements for cases with potential Colorectal Cancer (CRC). The app is built using React, and the backend API is built using Flask and Python.
+AugMed is a clinical case review platform for research on AI-augmented medical decision-making. It presents clinicians with de-identified patient cases (stored in OMOP CDM format) and collects their diagnostic assessments and clinical recommendations. Researchers control exactly which clinical features each participant sees, enabling controlled experiments on how AI assistance and information disclosure influence clinical judgment. The platform is domain-agnostic — any clinical scenario representable in OMOP format can be studied. The backend API is built using Flask and Python.
 
 **Live Website**: **[https://augmed1.dhep.org/](https://augmed1.dhep.org/).**
 

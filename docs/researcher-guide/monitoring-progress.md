@@ -138,9 +138,9 @@ The `answer` column is a JSON object where keys are question titles and values a
 
 ```json
 {
-  "How would you assess this patient's risk for colorectal cancer?": "moderate risk",
-  "How confident are you in your screening recommendation?": "2 - Somewhat Confident",
-  "What colorectal cancer screening options would you recommend?": "Colonoscopy"
+  "How would you assess this patient's risk level?": "Moderate Risk",
+  "How confident are you in your assessment?": "2 - Somewhat Confident",
+  "What would you recommend for this patient?": "Option A"
 }
 ```
 

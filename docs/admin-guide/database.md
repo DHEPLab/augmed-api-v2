@@ -107,7 +107,7 @@ Stores participant questionnaire responses. One row = one participant's complete
 | `display_configuration` | JSON | Snapshot of `path_config` at time of submission — preserves what was shown even if config changes |
 | `answer_config_id` | UUID | Links to `answer_config.id` — which questionnaire version was used |
 | `answer` | JSON | Participant's responses: `{question_title: response_value, ...}` |
-| `ai_score_shown` | boolean | True if the AI CRC risk score was visible to this participant for this case |
+| `ai_score_shown` | boolean | True if the AI prediction was visible to this participant for this case |
 | `created_timestamp` | timestamp | Submission time |
 | `modified_timestamp` | timestamp | Last modification |
 
@@ -167,7 +167,7 @@ The `page_config` entry maps each clinical section to concept IDs:
     "Family History": [4167217],
     "Social History": {"Smoke": [4041306]},
     "Medical History": [1008364],
-    "CRC risk assessments": [45614722]
+    "AI Predictions": [your_ai_concept_id]
   },
   "PATIENT COMPLAINT": {
     "Chief Complaint": [38000282]
@@ -262,7 +262,7 @@ Clinical observations (symptoms, assessments, AI scores, etc.).
 | `visit_occurrence_id` | integer | Links to `visit_occurrence.visit_occurrence_id` |
 | `observation_concept_id` | integer | OMOP concept ID for the type of observation |
 | `observation_type_concept_id` | integer | How the observation was recorded |
-| `value_as_string` | varchar | String value (used for AI score: `"Colorectal Cancer Score: 12"`) |
+| `value_as_string` | varchar | String value (used for AI scores, symptom values, etc.) |
 | `value_as_number` | float | Numeric value |
 | `value_as_concept_id` | integer | Coded value |
 | `unit_concept_id` | integer | Unit of measurement |
