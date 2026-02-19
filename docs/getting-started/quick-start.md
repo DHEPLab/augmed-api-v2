@@ -207,10 +207,11 @@ The display config assigns cases to participants and specifies which clinical fe
 
 ```csv
 User,Case No.,Path,Collapse,Highlight,Top
-testparticipant@example.com,1,BACKGROUND.Medical History.Fatigue: Yes,FALSE,TRUE,
+testparticipant@example.com,1,BACKGROUND.Medical History.Hypertension: Yes,FALSE,TRUE,
 testparticipant@example.com,1,BACKGROUND.Family History.Cancer: No,FALSE,TRUE,
-testparticipant@example.com,1,RISK ASSESSMENT.CRC risk assessments,FALSE,TRUE,
 ```
+
+> **Note:** To also show the AI prediction, add a `RISK ASSESSMENT.*` row matching your page config. See [Config CSV Format](../reference/config-csv-format.md).
 
 Upload it:
 

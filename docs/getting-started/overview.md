@@ -38,7 +38,7 @@ An administrator uploads an **answer config** — a JSON document defining the q
 
 ### 3. Design Experimental Arms
 
-The researcher defines which clinical features each participant will see for each case. This is the core of the experimental design. A participant assigned to the "AI score shown" arm sees the AI CRC risk score; one assigned to the "no AI score" arm does not. Feature visibility is controlled at a per-feature, per-case, per-user level.
+The researcher defines which clinical features each participant will see for each case. This is the core of the experimental design. A participant assigned to the "AI shown" arm sees the AI prediction; one assigned to the "no AI" arm does not. Feature visibility is controlled at a per-feature, per-case, per-user level.
 
 ### 4. Upload the Display Config
 
@@ -87,7 +87,7 @@ An **answer config** (`answer_config` table) defines the questionnaire structure
 
 ### Arm
 
-An **arm** is a researcher-defined experimental condition. AugMed does not have a formal "arm" database table — arms are implicit in the display config assignments. All participants assigned configs that include the AI score path are in the "AI shown" arm; those without it are in the "AI not shown" arm. More complex designs (varying which features are shown) are implemented by creating different sets of display configs.
+An **arm** is a researcher-defined experimental condition. AugMed does not have a formal "arm" database table — arms are implicit in the display config assignments. All participants assigned configs that include the AI prediction path are in the "AI shown" arm; those without it are in the "AI not shown" arm. More complex designs (varying which features are shown) are implemented by creating different sets of display configs.
 
 ### Experiment
 
@@ -95,7 +95,9 @@ An **experiment** is a complete research study conducted on the platform. An exp
 
 ### AI Score
 
-The **AI score** is a machine-learning-generated colorectal cancer (CRC) risk score for each patient. It is stored as an observation in the OMOP `observation` table using concept ID `45614722`. The score takes the form `"Colorectal Cancer Score: {value}"` stored in `value_as_string`. Whether a participant sees this score is controlled by including the `RISK ASSESSMENT.CRC risk assessments` path in their display config.
+The **AI score** is a machine-learning-generated prediction for each patient, stored as an observation in the OMOP `observation` table. The specific concept ID, score format, and display label are configured per study. Whether a participant sees the AI score is controlled by including the corresponding `RISK ASSESSMENT.*` path in their display config.
+
+> **Example:** In the CRC screening study, the AI score used concept ID `45614722` with format `"Colorectal Cancer Score: {value}"`. See [CRC Terminology](../examples/crc-screening/terminology.md).
 
 ### OMOP CDM
 
@@ -103,4 +105,4 @@ The **OMOP Common Data Model (CDM)** is a standardized schema for electronic hea
 
 ### Concept ID
 
-A **concept ID** is an integer that identifies a clinical entity in the OMOP vocabulary. For example, concept ID `45614722` represents the AI CRC risk score observation. The `concept` table maps concept IDs to human-readable names. When the API displays clinical data, it resolves concept IDs to concept names for the UI.
+A **concept ID** is an integer that identifies a clinical entity in the OMOP vocabulary. The `concept` table maps concept IDs to human-readable names. When the API displays clinical data, it resolves concept IDs to concept names for the UI. AI score concept IDs are study-specific and configured in the page config.

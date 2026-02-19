@@ -50,7 +50,7 @@ The JSON array within a display config that lists which clinical data to show. E
   - `highlight: true/false` — whether to visually highlight this item
   - `top: <number>` — pins this item to a "key findings" panel, with lower numbers shown first
 
-Path strings follow a hierarchical structure: `{Section}.{Category}.{Feature}: {Value}` for background features, or `RISK ASSESSMENT.CRC risk assessments` to show the AI score section.
+Path strings follow a hierarchical structure: `{Section}.{Category}.{Feature}: {Value}` for background features, or `RISK ASSESSMENT.{AI Section Name}` to show the AI score section.
 
 ---
 
@@ -70,10 +70,12 @@ The config is a JSON array of question objects. Each question has:
 
 An experimental condition in the study design. AugMed does not store arms as a formal database entity — arms are defined implicitly by the display config assignments. Participants are in the same "arm" if they receive the same pattern of clinical feature visibility across their assigned cases.
 
-Common arms in CRC screening studies:
-- **AI shown arm**: display configs include the `RISK ASSESSMENT.CRC risk assessments` path
+Common arm designs:
+- **AI shown arm**: display configs include the AI prediction path (e.g., `RISK ASSESSMENT.{Your AI Section}`)
 - **AI not shown arm**: display configs do not include that path
-- **Feature variation arms**: different subsets of medical/family history features are shown
+- **Feature variation arms**: different subsets of clinical history features are shown
+
+> **Example:** In the CRC screening study, the AI path was `RISK ASSESSMENT.CRC risk assessments`. See [CRC Screening Example](../examples/crc-screening/terminology.md) for details.
 
 ---
 
@@ -85,15 +87,11 @@ A complete research study conducted on AugMed. An experiment encompasses: the se
 
 ## AI Score
 
-A machine-learning-generated colorectal cancer (CRC) risk score for a patient, stored in the OMOP `observation` table with concept ID `45614722`. The score is stored as a string in `value_as_string` in the format `"Colorectal Cancer Score: {value}"`.
-
-Whether a participant sees the AI score for a given case is controlled by including `RISK ASSESSMENT.CRC risk assessments` in their display config path config. When shown, the score is displayed with a label indicating the risk categories:
-
-- **Low**: score < 6
-- **Medium**: score 6–11
-- **High**: score > 11
+A machine-learning-generated prediction stored in the OMOP `observation` table. The AI score is a study-specific concept — researchers define which OMOP concept ID represents the AI output and how it is formatted. Whether a participant sees the AI score for a given case is controlled by including the corresponding `RISK ASSESSMENT.*` path in their display config.
 
 In export data, `ai_score (shown)` records whether the score was visible to the participant, and `ai_score (value)` records the numeric score value.
+
+> **Example:** In the CRC screening study, the AI score used concept ID `45614722`, stored as `"Colorectal Cancer Score: {value}"`, with risk categories Low (<6), Medium (6-11), High (>11). See [CRC Terminology](../examples/crc-screening/terminology.md).
 
 ---
 
@@ -109,15 +107,14 @@ AugMed stores all patient clinical data in OMOP tables (`person`, `visit_occurre
 
 An integer that uniquely identifies a clinical entity in the OMOP vocabulary. Concept IDs are resolved to human-readable names via the `concept` table.
 
-Key concept IDs used in AugMed:
+Common concept IDs used in AugMed:
 
 | Concept ID | Description |
 |-----------|-------------|
-| 45614722 | AI CRC risk score observation |
 | 8507 | Male gender |
 | 8532 | Female gender |
 
-The `concept` table stores the full vocabulary. Researchers can query it to find concept IDs for clinical features they want to include in their page configuration.
+The `concept` table stores the full vocabulary. Researchers can query it to find concept IDs for clinical features they want to include in their page configuration. AI score concept IDs are study-specific — see [CRC Terminology](../examples/crc-screening/terminology.md) for an example mapping.
 
 ---
 

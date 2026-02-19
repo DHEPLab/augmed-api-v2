@@ -108,72 +108,49 @@ The export CSV has one row per participant-case submission. Rows are sorted by `
 | `age` | integer | Patient age at time of visit (visit year minus birth year) |
 | `gender` | string | Patient gender (from OMOP concept name, e.g., "MALE", "FEMALE") |
 
-#### Family History Feature Columns (Shown Flags)
+#### Clinical Feature Columns (Shown Flags)
 
-One column per family history feature, indicating whether the feature was visible to the participant:
+One column per clinical feature in your study's configuration, indicating whether the feature was visible to the participant. Column names follow the pattern `{Category}.{Feature} (shown)`:
 
-| Column | Values | Description |
+| Column Pattern | Values | Description |
 |--------|--------|-------------|
-| `Family History.Cancer (shown)` | True/False | Was family history of cancer shown? |
-| `Family History.Colorectal Cancer (shown)` | True/False | Was family history of CRC shown? |
-| `Family History.Diabetes (shown)` | True/False | Was family history of diabetes shown? |
-| `Family History.Hypertension (shown)` | True/False | Was family history of hypertension shown? |
+| `Family History.{Feature} (shown)` | True/False | Was this family history feature shown? |
+| `Medical History.{Feature} (shown)` | True/False | Was this medical history feature shown? |
+| `Social History.{Feature} (shown)` | True/False | Was this social history feature shown? |
 
-#### Medical History Feature Columns (Shown Flags)
-
-One column per medical history feature:
-
-| Column | Values |
-|--------|--------|
-| `Medical History.Abdominal Pain/Distension (shown)` | True/False |
-| `Medical History.Anxiety and/or Depression (shown)` | True/False |
-| `Medical History.Asthma (shown)` | True/False |
-| `Medical History.Blood Stained Stool (shown)` | True/False |
-| `Medical History.Chronic Diarrhea (shown)` | True/False |
-| `Medical History.Constipation (shown)` | True/False |
-| `Medical History.Diabetes (shown)` | True/False |
-| `Medical History.Fatigue (shown)` | True/False |
-| `Medical History.Headache (shown)` | True/False |
-| `Medical History.Hyperlipidemia (shown)` | True/False |
-| `Medical History.Hypertension (shown)` | True/False |
-| `Medical History.Hypothyroidism (shown)` | True/False |
-| `Medical History.Irritable Bowel Syndrome (shown)` | True/False |
-| `Medical History.Migraines (shown)` | True/False |
-| `Medical History.Osteoarthritis (shown)` | True/False |
-| `Medical History.Rectal Bleeding (shown)` | True/False |
-| `Medical History.Shortness of Breath (shown)` | True/False |
-| `Medical History.Tenderness Abdomen (shown)` | True/False |
+The specific feature columns depend on your study's page configuration.
 
 #### AI Score Column (Shown Flag)
 
 | Column | Values | Description |
 |--------|--------|-------------|
-| `ai_score (shown)` | Yes/No | Whether the AI CRC risk score was shown to the participant |
+| `ai_score (shown)` | Yes/No | Whether the AI prediction was shown to the participant |
 
 #### Feature Value Columns
 
 Parallel to each `(shown)` column, there is a corresponding `(value)` column with the patient's actual clinical value:
 
-| Column | Values | Description |
+| Column Pattern | Values | Description |
 |--------|--------|-------------|
-| `Family History.Cancer (value)` | Yes/No | Patient's family history of cancer |
-| `Family History.Colorectal Cancer (value)` | Yes/No | Patient's family history of CRC |
-| `Medical History.Fatigue (value)` | Yes/No | Whether patient had fatigue |
-| *(etc. for all features)* | Yes/No | |
-| `ai_score (value)` | integer or empty | Numeric AI CRC risk score |
+| `{Category}.{Feature} (value)` | Yes/No | Patient's actual clinical value for this feature |
+| `ai_score (value)` | integer or empty | Numeric AI prediction score |
 
 > **Note:** Value columns contain the patient's ground truth value regardless of whether the feature was shown to the participant. A participant may not have seen a feature (shown = False) but the patient's actual value is still recorded. This allows researchers to analyze how unseen information relates to outcomes.
 
 #### Outcome Columns (Participant Responses)
 
-| Column | Type | Description |
-|--------|------|-------------|
-| `risk_assessment` | integer (1–5) | Participant's CRC risk rating: 1=Very Low, 2=Low, 3=Moderate, 4=High, 5=Very High |
-| `confidence_level` | integer (1–3) | Participant's confidence: extracted from the response option (1=Low, 2=Medium, 3=High) |
-| `screening_recommendation` | string | Normalized screening recommendation: "Colonoscopy", "FIT", "No screening", "Reassessment in N years" |
-| `additional_info` | string | Free-text response to the additional information question |
+Outcome columns are derived from your answer config (questionnaire). The export script normalizes raw questionnaire responses into structured columns. The specific columns depend on your study design.
 
-#### Recruitment Survey Columns
+| Column Pattern | Type | Description |
+|--------|------|-------------|
+| *(study-specific)* | varies | Normalized response values from your questionnaire |
+| `additional_info` | string | Free-text response (if included in your questionnaire) |
+
+> **Example:** The CRC study exported `risk_assessment` (1-5 scale), `confidence_level` (1-3), and `screening_recommendation` (categorical). See [CRC Experiment Config](../examples/crc-screening/experiment-config.md).
+
+#### Recruitment Survey Columns (Optional)
+
+If a recruitment survey CSV is present, these columns are joined automatically:
 
 | Column | Description |
 |--------|-------------|
@@ -181,14 +158,13 @@ Parallel to each `(shown)` column, there is a corresponding `(value)` column wit
 | `professional_role_other` | Free-text if "Other" was selected |
 | `practice_years` | Years in clinical practice |
 | `practice_state` | State where participant practices |
-| `experience_screening` | Whether participant has CRC screening experience |
-| `years_screening` | Years of CRC screening experience |
+| *(study-specific)* | Additional survey fields |
 
 ## Example CSV Row
 
 ```
-person_id,user_id,order_id,case_open_time,answer_open_time,answer_submit_time,to_answer_open_secs,to_submit_secs,total_duration_secs,age,gender,Family History.Cancer (shown),...,ai_score (shown),ai_score (value),risk_assessment,confidence_level,screening_recommendation,...
-1001,8472938475827364,3,2024-10-15T14:23:01.000Z,2024-10-15T14:25:47.000Z,2024-10-15T14:28:33.000Z,166.0,166.0,332.0,58,MALE,True,...,Yes,12,3,2,Colonoscopy,...
+person_id,user_id,order_id,case_open_time,answer_open_time,answer_submit_time,to_answer_open_secs,to_submit_secs,total_duration_secs,age,gender,{Feature}.{Name} (shown),...,ai_score (shown),ai_score (value),...
+1001,8472938475827364,3,2024-10-15T14:23:01.000Z,2024-10-15T14:25:47.000Z,2024-10-15T14:28:33.000Z,166.0,166.0,332.0,58,MALE,True,...,Yes,12,...
 ```
 
 ## Method 3: Export API (Recommended)

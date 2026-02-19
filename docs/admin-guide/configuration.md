@@ -19,7 +19,7 @@ The `page_config` entry contains a JSON object with three top-level sections:
       "Alcohol": [concept_id_list]
     },
     "Medical History": [concept_id_list],
-    "CRC risk assessments": [45614722]
+    "AI Predictions": [your_ai_concept_id]
   },
   "PATIENT COMPLAINT": {
     "Chief Complaint": [concept_id_list]
@@ -33,7 +33,9 @@ The `page_config` entry contains a JSON object with three top-level sections:
 
 - Keys under `BACKGROUND` become the category names shown in the "Background" section
 - Values are either a list of concept IDs (leaf node) or a nested object (sub-categories)
-- Concept ID `45614722` is the AI CRC risk score
+- The AI prediction section name and concept ID are study-specific
+
+> **Example:** The CRC screening study used `"CRC risk assessments": [45614722]`. See [CRC Terminology](../examples/crc-screening/terminology.md).
 
 ### Updating Page Config
 
@@ -45,7 +47,7 @@ SET json_config = '{
   "BACKGROUND": {
     "Family History": [4167217],
     "Medical History": [1008364],
-    "CRC risk assessments": [45614722]
+    "AI Predictions": [your_ai_concept_id]
   },
   "PATIENT COMPLAINT": {
     "Chief Complaint": [38000282]
@@ -81,13 +83,13 @@ curl -X POST https://your-augmed-server/admin/config/answer \
     "config": [
       {
         "type": "SingleChoice",
-        "title": "How would you assess this patient'\''s risk for colorectal cancer?",
+        "title": "How would you assess this patient'\''s risk level?",
         "options": ["Very Low Risk", "Low Risk", "Moderate Risk", "High Risk", "Very High Risk"],
         "required": true
       },
       {
         "type": "SingleChoice",
-        "title": "How confident are you in your screening recommendation?",
+        "title": "How confident are you in your assessment?",
         "options": [
           "1 - Not Confident",
           "2 - Somewhat Confident",
@@ -97,13 +99,11 @@ curl -X POST https://your-augmed-server/admin/config/answer \
       },
       {
         "type": "SingleChoice",
-        "title": "What colorectal cancer screening options would you recommend for this patient?",
+        "title": "What would you recommend for this patient?",
         "options": [
-          "No screening, recommendation for reassessment in 1 years",
-          "No screening, recommendation for reassessment in 3 years",
-          "No screening, recommendation for reassessment in 5 years",
-          "Fecal Immunochemical Test (FIT)",
-          "Colonoscopy"
+          "Option A",
+          "Option B",
+          "Option C"
         ],
         "required": true
       },
@@ -115,6 +115,8 @@ curl -X POST https://your-augmed-server/admin/config/answer \
     ]
   }'
 ```
+
+> **Example:** For CRC-specific questionnaire examples with screening recommendations and risk assessment scales, see [CRC Experiment Config](../examples/crc-screening/experiment-config.md).
 
 Expected response:
 

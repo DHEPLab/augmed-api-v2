@@ -195,8 +195,8 @@ Returns the full case detail for a specific display config assignment. Requires 
     ],
     "importantInfos": [
       {
-        "key": "AI CRC Risk Score (<6: Low; 6-11: Medium; >11: High)",
-        "values": ["Predicted Colorectal Cancer Score: 12"]
+        "key": "AI Prediction",
+        "values": ["Predicted Score: 12"]
       }
     ]
   },
@@ -226,9 +226,9 @@ Submit a questionnaire response for a case. Requires JWT.
 
 ```json
 {
-  "How would you assess this patient's risk for colorectal cancer?": "Moderate Risk",
-  "How confident are you in your screening recommendation?": "2 - Somewhat Confident",
-  "What colorectal cancer screening options would you recommend?": "Colonoscopy"
+  "How would you assess this patient's risk level?": "Moderate Risk",
+  "How confident are you in your assessment?": "2 - Somewhat Confident",
+  "What would you recommend for this patient?": "Option A"
 }
 ```
 
@@ -265,13 +265,13 @@ Returns the current active questionnaire configuration. For authenticated users,
     "config": [
       {
         "type": "SingleChoice",
-        "title": "How would you assess this patient's risk for colorectal cancer?",
+        "title": "How would you assess this patient's risk level?",
         "options": ["Very Low Risk", "Low Risk", "Moderate Risk", "High Risk", "Very High Risk"],
         "required": true
       },
       {
         "type": "SingleChoice",
-        "title": "How confident are you in your screening recommendation?",
+        "title": "How confident are you in your assessment?",
         "options": ["1 - Not Confident", "2 - Somewhat Confident", "3 - Very Confident"],
         "required": true
       }
@@ -547,7 +547,7 @@ Create a new experiment with arm definitions and optional case pool.
 
 ```json
 {
-  "name": "CRC Risk Display Study",
+  "name": "AI Risk Display Study",
   "description": "Testing impact of lab data on diagnostic accuracy",
   "arms": [
     {"name": "control", "path_config": [{"path": "BACKGROUND.Demographics"}]},
@@ -566,7 +566,7 @@ Create a new experiment with arm definitions and optional case pool.
   "data": {
     "id": 1,
     "experiment_id": "exp-a1b2c3d4e5f6",
-    "name": "CRC Risk Display Study",
+    "name": "AI Risk Display Study",
     "status": "active",
     "arms": [...],
     "case_pool": [...],

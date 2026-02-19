@@ -15,24 +15,23 @@ The display config CSV is the primary tool researchers use to implement their ex
 
 ## Step 1: Define Your Experimental Arms
 
-Before creating any files, decide on your experimental design. Common designs for CRC screening studies:
+Before creating any files, decide on your experimental design. Common designs:
 
 **Two-arm design (AI vs. no AI):**
-- Arm A: participants see clinical history + AI risk score
+- Arm A: participants see clinical history + AI prediction
 - Arm B: participants see clinical history only
 
 **Four-arm design (feature variation):**
-- Arm A: full history + AI score
-- Arm B: full history, no AI score
-- Arm C: limited history + AI score
-- Arm D: limited history, no AI score
+- Arm A: full history + AI prediction
+- Arm B: full history, no AI
+- Arm C: limited history + AI prediction
+- Arm D: limited history, no AI
 
-Write down exactly which BACKGROUND features each arm shows. The available background feature categories are:
-
-- `Family History` — with features: Cancer, Colorectal Cancer, Diabetes, Hypertension
-- `Medical History` — with features: Abdominal Pain/Distension, Anxiety and/or Depression, Asthma, Blood Stained Stool, Chronic Diarrhea, Constipation, Diabetes, Fatigue, Headache, Hyperlipidemia, Hypertension, Hypothyroidism, Irritable Bowel Syndrome, Migraines, Osteoarthritis, Rectal Bleeding, Shortness of Breath, Tenderness Abdomen
+Write down exactly which BACKGROUND features each arm shows. The available feature categories depend on your study's page configuration — they are defined by the OMOP concept IDs in your `page_config`. See [OMOP Mapping](../reference/omop-mapping.md) for how the page config maps to clinical sections.
 
 **Note:** Patient Demographics (age and gender) are always shown and cannot be suppressed.
+
+> **Example:** The CRC screening study used Family History (Cancer, Colorectal Cancer, Diabetes, Hypertension) and 18 Medical History features. See [CRC Terminology](../examples/crc-screening/terminology.md) for the complete feature list.
 
 ## Step 2: Determine Case Assignments
 
@@ -73,11 +72,11 @@ Example: `BACKGROUND.Medical History.Fatigue: Yes`
 
 The `: Yes` or `: No` at the end specifies the patient's actual value for that feature. This value is stored and later exported — it is not filtered by the path; it is the ground truth value you are surfacing to the participant.
 
-**AI score section**:
+**AI prediction section**:
 ```
-RISK ASSESSMENT.CRC risk assessments
+RISK ASSESSMENT.{Your AI Section Name}
 ```
-Including this path shows the AI-generated CRC risk score for the patient.
+Including this path shows the AI-generated prediction for the patient. The section name must match a key in the `BACKGROUND` section of your `page_config`.
 
 **Physical examination items**:
 ```
@@ -93,25 +92,25 @@ Example — showing selected features for participant `alice@example.com`, case 
 
 ```csv
 User,Case No.,Path,Collapse,Highlight,Top
-alice@example.com,12,BACKGROUND.Family History.Colorectal Cancer: No,FALSE,TRUE,
-alice@example.com,12,BACKGROUND.Family History.Cancer: No,FALSE,TRUE,
-alice@example.com,12,BACKGROUND.Medical History.Fatigue: Yes,FALSE,TRUE,
-alice@example.com,12,BACKGROUND.Medical History.Rectal Bleeding: No,FALSE,TRUE,
-alice@example.com,12,BACKGROUND.Medical History.Blood Stained Stool: No,FALSE,TRUE,
-alice@example.com,12,RISK ASSESSMENT.CRC risk assessments,FALSE,TRUE,
+alice@example.com,12,BACKGROUND.Family History.Condition A: No,FALSE,TRUE,
+alice@example.com,12,BACKGROUND.Family History.Condition B: No,FALSE,TRUE,
+alice@example.com,12,BACKGROUND.Medical History.Symptom X: Yes,FALSE,TRUE,
+alice@example.com,12,BACKGROUND.Medical History.Symptom Y: No,FALSE,TRUE,
+alice@example.com,12,RISK ASSESSMENT.AI Predictions,FALSE,TRUE,
 ```
 
 The same participant with case 13 in the "no AI" arm:
 
 ```csv
-alice@example.com,13,BACKGROUND.Family History.Colorectal Cancer: No,FALSE,TRUE,
-alice@example.com,13,BACKGROUND.Family History.Cancer: No,FALSE,TRUE,
-alice@example.com,13,BACKGROUND.Medical History.Fatigue: No,FALSE,TRUE,
-alice@example.com,13,BACKGROUND.Medical History.Rectal Bleeding: Yes,FALSE,TRUE,
-alice@example.com,13,BACKGROUND.Medical History.Blood Stained Stool: No,FALSE,TRUE,
+alice@example.com,13,BACKGROUND.Family History.Condition A: No,FALSE,TRUE,
+alice@example.com,13,BACKGROUND.Family History.Condition B: No,FALSE,TRUE,
+alice@example.com,13,BACKGROUND.Medical History.Symptom X: No,FALSE,TRUE,
+alice@example.com,13,BACKGROUND.Medical History.Symptom Y: Yes,FALSE,TRUE,
 ```
 
-Note that the "no AI" case simply omits the `RISK ASSESSMENT.CRC risk assessments` row.
+Note that the "no AI" case simply omits the `RISK ASSESSMENT.*` row.
+
+> **Example:** For CRC-specific display config examples with colorectal cancer features, see [CRC Experiment Config](../examples/crc-screening/experiment-config.md).
 
 ### Generating the CSV Programmatically
 
@@ -128,18 +127,21 @@ For Python-based generation:
 
 ```python
 import csv
-import itertools
 
 participants = ["alice@example.com", "bob@example.com"]
 cases_arm_a = [1, 3, 5, 7]   # AI shown
 cases_arm_b = [2, 4, 6, 8]   # No AI
 
+# Define your study-specific features here
 features = [
-    ("Family History", "Colorectal Cancer", None),   # value from DB
-    ("Family History", "Cancer", None),
-    ("Medical History", "Fatigue", None),
-    ("Medical History", "Rectal Bleeding", None),
+    ("Family History", "Condition A", None),   # value from DB
+    ("Family History", "Condition B", None),
+    ("Medical History", "Symptom X", None),
+    ("Medical History", "Symptom Y", None),
 ]
+
+# Replace with your study's AI section name from page_config
+ai_path = "RISK ASSESSMENT.AI Predictions"
 
 rows = []
 for user in participants:
@@ -148,14 +150,14 @@ for user in participants:
             # value should come from your case database extract
             path = f"BACKGROUND.{category}.{feature}: Yes"  # placeholder
             rows.append([user, case_id, path, "FALSE", "TRUE", ""])
-        # Add AI score row
-        rows.append([user, case_id, "RISK ASSESSMENT.CRC risk assessments", "FALSE", "TRUE", ""])
+        # Add AI prediction row
+        rows.append([user, case_id, ai_path, "FALSE", "TRUE", ""])
 
     for case_id in cases_arm_b:
         for category, feature, value in features:
             path = f"BACKGROUND.{category}.{feature}: No"  # placeholder
             rows.append([user, case_id, path, "FALSE", "TRUE", ""])
-        # No AI score row for arm B
+        # No AI row for arm B
 
 with open("experiment_config.csv", "w", newline="") as f:
     writer = csv.writer(f)

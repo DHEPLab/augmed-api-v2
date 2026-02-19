@@ -39,8 +39,8 @@ Each cycle processes all new answers since the last run and generates fresh assi
 
 An **arm** defines a set of clinical features to display. For example:
 
-- **Control arm**: Shows only Demographics
-- **Treatment arm**: Shows Demographics + Lab Results + AI Risk Score
+- **Control arm**: Shows only demographics
+- **Treatment arm**: Shows demographics + lab results + AI prediction
 
 Arms are defined when creating an experiment and stay fixed throughout.
 

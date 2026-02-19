@@ -73,7 +73,7 @@ curl -X POST https://augmed.dhep.org/api/v1/experiments \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "CRC Risk Display Study - Phase 2",
+    "name": "AI Risk Display Study - Phase 2",
     "description": "Testing impact of additional lab data on diagnostic accuracy",
     "arms": [
       { "name": "control", "path_config": [{"path": "BACKGROUND.Demographics"}] },

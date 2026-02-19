@@ -20,9 +20,9 @@ See [Exporting Data](exporting-data.md) for a full description of all columns.
 The most important analysis variables are:
 
 - **Treatment indicator**: `ai_score (shown)` — "Yes" if participant saw the AI score, "No" if not
-- **AI score value**: `ai_score (value)` — the numeric AI CRC risk score (0 to roughly 20+)
-- **Primary outcome**: `risk_assessment` — 1–5 scale (1=Very Low, 2=Low, 3=Moderate, 4=High, 5=Very High)
-- **Secondary outcome**: `screening_recommendation` — categorical (Colonoscopy, FIT, No screening, Reassessment)
+- **AI score value**: `ai_score (value)` — the numeric AI prediction score
+- **Primary outcome**: study-specific response columns from your answer config
+- **Secondary outcome**: study-specific response columns from your answer config
 - **Timing**: `total_duration_secs` — seconds from case open to submission
 - **Order effect**: `order_id` — sequential case number for this participant
 - **Patient features**: `Family History.*`, `Medical History.*` columns — ground truth patient values
@@ -45,10 +45,9 @@ df <- df %>%
     risk_assessment = as.integer(risk_assessment),
     total_duration_mins = total_duration_secs / 60,
 
-    # Create factor for screening recommendation
-    screening_rec = factor(screening_recommendation,
-      levels = c("No screening", "Reassessment in 1 years",
-                 "Reassessment in 3 years", "FIT", "Colonoscopy"))
+    # Create factor for categorical outcome (customize levels for your study)
+    outcome_factor = factor(primary_outcome,
+      levels = c("Level 1", "Level 2", "Level 3"))
   )
 
 # Quick summary
@@ -153,22 +152,24 @@ model_feature <- lm(
 summary(model_feature)
 ```
 
-### Screening Recommendation Analysis
+### Categorical Outcome Analysis
 
 ```r
-# Proportion recommending colonoscopy by arm
+# Proportion selecting a specific response by arm
 df %>%
-  mutate(rec_colonoscopy = (screening_recommendation == "Colonoscopy")) %>%
+  mutate(selected_option = (primary_outcome == "Target Option")) %>%
   group_by(ai_shown) %>%
   summarize(
-    pct_colonoscopy = mean(rec_colonoscopy, na.rm = TRUE),
+    pct_selected = mean(selected_option, na.rm = TRUE),
     n = n()
   )
 
-# Chi-square test
-table_recs <- table(df$screening_recommendation, df$ai_shown)
+# Chi-square test for independence
+table_recs <- table(df$primary_outcome, df$ai_shown)
 chisq.test(table_recs)
 ```
+
+> **Example:** For CRC-specific analysis code (colonoscopy recommendation rates, screening factor levels), see [CRC Experiment Config](../examples/crc-screening/experiment-config.md).
 
 ## Python Examples
 
@@ -299,12 +300,12 @@ df["n_features_shown"] = df[shown_cols].apply(
 print(df[["n_features_shown", "risk_assessment"]].corr())
 ```
 
-## Analysis Repository
+## Study-Specific Analysis
 
-For the AIM-AHEAD project, the analysis code repository is:
-**AIM-AHEAD-AugMed-Analysis** (link to be added by the DHEP team)
-
-That repository contains project-specific analysis scripts, IRB-approved data handling procedures, and pre-registered analysis plans.
+For study-specific analysis scripts, create a dedicated analysis repository with:
+- Study-specific data handling procedures
+- IRB-approved analysis plans
+- Pre-registered analysis code
 
 ## Related Documentation
 

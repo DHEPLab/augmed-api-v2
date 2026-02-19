@@ -39,7 +39,7 @@ Defines which clinical features each participant sees for each case.
 | `id` | VARCHAR | No | — | Primary key; UUID string generated at upload time |
 | `user_email` | VARCHAR | Yes | — | Participant email; links to `user.email` |
 | `case_id` | INTEGER | Yes | — | OMOP `visit_occurrence.visit_occurrence_id` |
-| `path_config` | JSON | Yes | null | Array of path entry objects specifying visible features |
+| `path_config` | JSON | Yes | null | Array of path entry objects specifying visible clinical features |
 | `experiment_id` | VARCHAR(100) | Yes | null | Links to `experiment.experiment_id` (if RL-managed) |
 | `rl_run_id` | INTEGER | Yes | null | Links to `rl_run.id` (which RL cycle created this config) |
 | `arm` | VARCHAR(100) | Yes | null | Which experiment arm this config belongs to |
@@ -57,7 +57,7 @@ Defines which clinical features each participant sees for each case.
     }
   },
   {
-    "path": "RISK ASSESSMENT.CRC risk assessments"
+    "path": "RISK ASSESSMENT.AI Predictions"
   }
 ]
 ```
@@ -81,7 +81,7 @@ Stores participant questionnaire responses.
 | `display_configuration` | JSON | Yes | null | Snapshot of the `path_config` used when this answer was submitted |
 | `answer_config_id` | UUID | Yes | — | Links to `answer_config.id` — questionnaire version used |
 | `answer` | JSON | Yes | null | Participant responses: `{question_title: response_value}` |
-| `ai_score_shown` | BOOLEAN | No | false | True if the AI CRC risk score was visible to this participant for this case |
+| `ai_score_shown` | BOOLEAN | No | false | True if the AI prediction was visible to this participant for this case |
 | `created_timestamp` | TIMESTAMP | No | now() | Submission time |
 | `modified_timestamp` | TIMESTAMP | No | now() | Last update time |
 
@@ -91,9 +91,9 @@ Stores participant questionnaire responses.
 
 ```json
 {
-  "How would you assess this patient's risk for colorectal cancer?": "Moderate Risk",
-  "How confident are you in your screening recommendation?": "2 - Somewhat Confident",
-  "What colorectal cancer screening options would you recommend for this patient?": "Colonoscopy",
+  "How would you assess this patient's risk level?": "Moderate Risk",
+  "How confident are you in your assessment?": "2 - Somewhat Confident",
+  "What would you recommend for this patient?": "Option A",
   "What additional information would be useful for making your recommendation?": "Would like to know more about the patient's recent lab results."
 }
 ```
@@ -327,7 +327,7 @@ The OMOP vocabulary table — maps concept IDs to human-readable names.
 
 | Concept ID | Concept Name | Domain | Used For |
 |-----------|-------------|--------|---------|
-| 45614722 | AI CRC risk score observation | Observation | Colorectal cancer risk score |
+| *(study-specific)* | AI prediction observation | Observation | Study-specific AI model output |
 | 8507 | MALE | Gender | Male gender |
 | 8532 | FEMALE | Gender | Female gender |
 | 40490382 | BMI (body mass index) centile | Measurement | BMI, displayed as range |
