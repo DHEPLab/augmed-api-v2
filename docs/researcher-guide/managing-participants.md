@@ -117,7 +117,8 @@ SET active = true
 WHERE email = 'jsmith@hospitalname.org';
 ```
 
-> **Note:** Never do this in production without also ensuring the user has a password set through the proper reset flow.
+!!! note
+    Never do this in production without also ensuring the user has a password set through the proper reset flow.
 
 ## Viewing All Users
 
@@ -238,7 +239,8 @@ cd script/assign_cases
 python remove_all_case_assignments.py
 ```
 
-> **Warning:** This deletes all display config records. Do not run this unless you are sure no in-progress participants will be affected. Export data first.
+!!! warning
+    This deletes all display config records. Do not run this unless you are sure no in-progress participants will be affected. Export data first.
 
 ## Related Documentation
 

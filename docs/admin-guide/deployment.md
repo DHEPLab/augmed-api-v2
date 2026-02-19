@@ -131,7 +131,8 @@ terraform plan    # Preview changes
 terraform apply   # Apply changes
 ```
 
-> **Warning:** Terraform changes to RDS (database) can cause downtime or data loss. Always review the plan carefully before applying, especially for database-related resources.
+!!! warning
+    Terraform changes to RDS (database) can cause downtime or data loss. Always review the plan carefully before applying, especially for database-related resources.
 
 ## Environment Variables
 
@@ -201,7 +202,8 @@ flask db migrate -m "Add new column to user table"
 flask db upgrade
 ```
 
-> **Important:** Always review generated migration scripts before running `upgrade`. Auto-generated scripts sometimes include `drop_table` or other destructive operations that are not intended.
+!!! important
+    Always review generated migration scripts before running `upgrade`. Auto-generated scripts sometimes include `drop_table` or other destructive operations that are not intended.
 
 **Rolling back:**
 

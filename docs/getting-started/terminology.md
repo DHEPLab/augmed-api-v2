@@ -75,7 +75,8 @@ Common arm designs:
 - **AI not shown arm**: display configs do not include that path
 - **Feature variation arms**: different subsets of clinical history features are shown
 
-> **Example:** In the CRC screening study, the AI path was `RISK ASSESSMENT.CRC risk assessments`. See [CRC Screening Example](../examples/crc-screening/terminology.md) for details.
+!!! example
+    In the CRC screening study, the AI path was `RISK ASSESSMENT.CRC risk assessments`. See [CRC Screening Example](../examples/crc-screening/terminology.md) for details.
 
 ---
 
@@ -91,7 +92,8 @@ A machine-learning-generated prediction stored in the OMOP `observation` table. 
 
 In export data, `ai_score (shown)` records whether the score was visible to the participant, and `ai_score (value)` records the numeric score value.
 
-> **Example:** In the CRC screening study, the AI score used concept ID `45614722`, stored as `"Colorectal Cancer Score: {value}"`, with risk categories Low (<6), Medium (6-11), High (>11). See [CRC Terminology](../examples/crc-screening/terminology.md).
+!!! example
+    In the CRC screening study, the AI score used concept ID `45614722`, stored as `"Colorectal Cancer Score: {value}"`, with risk categories Low (<6), Medium (6-11), High (>11). See [CRC Terminology](../examples/crc-screening/terminology.md).
 
 ---
 

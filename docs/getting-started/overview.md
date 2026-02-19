@@ -97,7 +97,8 @@ An **experiment** is a complete research study conducted on the platform. An exp
 
 The **AI score** is a machine-learning-generated prediction for each patient, stored as an observation in the OMOP `observation` table. The specific concept ID, score format, and display label are configured per study. Whether a participant sees the AI score is controlled by including the corresponding `RISK ASSESSMENT.*` path in their display config.
 
-> **Example:** In the CRC screening study, the AI score used concept ID `45614722` with format `"Colorectal Cancer Score: {value}"`. See [CRC Terminology](../examples/crc-screening/terminology.md).
+!!! example
+    In the CRC screening study, the AI score used concept ID `45614722` with format `"Colorectal Cancer Score: {value}"`. See [CRC Terminology](../examples/crc-screening/terminology.md).
 
 ### OMOP CDM
 

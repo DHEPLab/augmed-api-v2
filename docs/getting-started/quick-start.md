@@ -2,7 +2,8 @@
 
 This guide walks you through setting up a local AugMed instance for development or testing. You will have a running API server, a connected database, and a test user able to review cases.
 
-> **Just want to try AugMed?** If you don't need a development environment, use the [One-Click Deploy](one-click-deploy.md) (Railway, ~5 minutes) or [Self-Hosted Deploy](self-hosted-deploy.md) (Docker Compose, ~10 minutes) instead. This guide is for developers who want to run the services outside of Docker.
+!!! tip "Just want to try AugMed?"
+    If you don't need a development environment, use the [One-Click Deploy](one-click-deploy.md) (Railway, ~5 minutes) or [Self-Hosted Deploy](self-hosted-deploy.md) (Docker Compose, ~10 minutes) instead. This guide is for developers who want to run the services outside of Docker.
 
 ## Prerequisites
 
@@ -65,7 +66,8 @@ JWT_REFRESH_TOKEN_EXPIRES=259200
 EXPORT_API_KEY=your-export-api-key
 ```
 
-> **Note:** Never commit `.env` files to version control. The `.gitignore` should already exclude them.
+!!! note
+    Never commit `.env` files to version control. The `.gitignore` should already exclude them.
 
 ## Step 3: Start the Database
 
@@ -102,7 +104,8 @@ From the project root directory:
 export PYTHONPATH=$(pwd)
 ```
 
-> **Note:** You need to run this command each time you open a new terminal session, or add it to your shell profile.
+!!! note
+    You need to run this command each time you open a new terminal session, or add it to your shell profile.
 
 ## Step 6: Start the API Server
 
@@ -137,7 +140,8 @@ npm start
 
 The frontend will start at `http://localhost:3000`. It expects the API at `http://localhost:5000`.
 
-> **Note:** If you see CORS errors in the browser console, you may need to enable CORS in the API. See the comment in `src/__init__.py` — uncomment the CORS lines and reinstall `flask-cors` with `pipenv install flask-cors`.
+!!! note
+    If you see CORS errors in the browser console, you may need to enable CORS in the API. See the comment in `src/__init__.py` — uncomment the CORS lines and reinstall `flask-cors` with `pipenv install flask-cors`.
 
 ## Step 8: Load Sample Data
 
@@ -211,7 +215,8 @@ testparticipant@example.com,1,BACKGROUND.Medical History.Hypertension: Yes,FALSE
 testparticipant@example.com,1,BACKGROUND.Family History.Cancer: No,FALSE,TRUE,
 ```
 
-> **Note:** To also show the AI prediction, add a `RISK ASSESSMENT.*` row matching your page config. See [Config CSV Format](../reference/config-csv-format.md).
+!!! note
+    To also show the AI prediction, add a `RISK ASSESSMENT.*` row matching your page config. See [Config CSV Format](../reference/config-csv-format.md).
 
 Upload it:
 
@@ -229,7 +234,8 @@ Expected response:
 }
 ```
 
-> **Note:** Uploading a new config **replaces all existing display configs**. See [Config CSV Format](../reference/config-csv-format.md) for details.
+!!! note
+    Uploading a new config **replaces all existing display configs**. See [Config CSV Format](../reference/config-csv-format.md) for details.
 
 ## Step 11: Activate a User and Review a Case
 
@@ -242,7 +248,8 @@ docker exec -it postgres_container psql -U augmed -d augmed \
   -c "UPDATE \"user\" SET active = true, password = 'temp' WHERE email = 'testparticipant@example.com';"
 ```
 
-> **Note:** Setting a real password requires going through the `POST /api/auth/reset-password-request` flow. For local testing, you can also set a hashed password directly. See [Managing Participants](../researcher-guide/managing-participants.md) for the full activation workflow.
+!!! note
+    Setting a real password requires going through the `POST /api/auth/reset-password-request` flow. For local testing, you can also set a hashed password directly. See [Managing Participants](../researcher-guide/managing-participants.md) for the full activation workflow.
 
 Log in:
 

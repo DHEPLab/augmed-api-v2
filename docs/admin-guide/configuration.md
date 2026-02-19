@@ -35,7 +35,8 @@ The `page_config` entry contains a JSON object with three top-level sections:
 - Values are either a list of concept IDs (leaf node) or a nested object (sub-categories)
 - The AI prediction section name and concept ID are study-specific
 
-> **Example:** The CRC screening study used `"CRC risk assessments": [45614722]`. See [CRC Terminology](../examples/crc-screening/terminology.md).
+!!! example
+    The CRC screening study used `"CRC risk assessments": [45614722]`. See [CRC Terminology](../examples/crc-screening/terminology.md).
 
 ### Updating Page Config
 
@@ -59,7 +60,8 @@ SET json_config = '{
 WHERE id = 'page_config';
 ```
 
-> **Note:** After changing the page config, you may need to regenerate your display config CSVs if the section names have changed, since path strings must match the page config structure.
+!!! note
+    After changing the page config, you may need to regenerate your display config CSVs if the section names have changed, since path strings must match the page config structure.
 
 ## Answer Config (Questionnaire)
 
@@ -116,7 +118,8 @@ curl -X POST https://your-augmed-server/admin/config/answer \
   }'
 ```
 
-> **Example:** For CRC-specific questionnaire examples with screening recommendations and risk assessment scales, see [CRC Experiment Config](../examples/crc-screening/experiment-config.md).
+!!! example
+    For CRC-specific questionnaire examples with screening recommendations and risk assessment scales, see [CRC Experiment Config](../examples/crc-screening/experiment-config.md).
 
 Expected response:
 
@@ -179,7 +182,8 @@ curl -X POST https://your-augmed-server/admin/config/upload \
   -F "file=@my_experiment_config.csv"
 ```
 
-> **Warning:** Each upload **replaces all existing display configs**. The service calls `clean_configurations()` before saving new ones.
+!!! warning
+    Each upload **replaces all existing display configs**. The service calls `clean_configurations()` before saving new ones.
 
 ### Viewing Current Assignments
 
