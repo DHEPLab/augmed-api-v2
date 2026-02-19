@@ -1,0 +1,70 @@
+# Full-stack AugMed deployment: PostgreSQL + API + RL service + Frontend
+# Usage: docker compose -f docker-compose.full.yml up --build
+#
+# Prerequisites:
+#   - augmed-app-v2 repo cloned alongside this repo (../augmed-app-v2)
+#   - augmed-rl repo cloned alongside this repo (../augmed-rl)
+#
+# Default credentials (change in production):
+#   Admin: admin@demo.augmed.org / augmed-demo
+#   Researcher: researcher@demo.augmed.org / augmed-demo
+#
+# Set SEED_DEMO_DATA=true (default) to auto-populate sample cases and users.
+#
+# Note: On macOS, port 5000 may conflict with AirPlay Receiver.
+# If so, either disable AirPlay in System Settings > General > AirDrop & Handoff,
+# or change the API host port below (e.g., "5001:5000").
+
+services:
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: augmed
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-augmed-dev}
+      POSTGRES_DB: augmed
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U augmed"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://augmed:${POSTGRES_PASSWORD:-augmed-dev}@db:5432/augmed
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-change-me-in-production}
+      EXPORT_API_KEY: ${EXPORT_API_KEY:-change-me-in-production}
+      SEED_DEMO_DATA: ${SEED_DEMO_DATA:-true}
+      PORT: 5000
+    ports:
+      - "5000:5000"
+
+  rl:
+    build:
+      context: ../augmed-rl
+    depends_on:
+      - api
+    environment:
+      AUGMED_RL_AUGMED_API_URL: http://api:5000
+      AUGMED_RL_AUGMED_API_KEY: ${EXPORT_API_KEY:-change-me-in-production}
+
+  app:
+    build:
+      context: ../augmed-app-v2
+    depends_on:
+      - api
+    environment:
+      API_URL: http://api:5000
+      PORT: 8080
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:

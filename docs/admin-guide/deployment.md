@@ -1,8 +1,63 @@
 # Deployment
 
-AugMed runs on AWS. This guide covers the production infrastructure, CI/CD pipeline, and environment configuration.
+AugMed supports multiple deployment options, from one-click cloud platforms to full AWS infrastructure.
 
-## Infrastructure Overview
+## Deployment Options
+
+| Option | Monthly Cost | Technical Skill | Best For |
+|--------|-------------|----------------|----------|
+| [Railway](#railway-one-click) | ~$5-8 | None | Quick demos, small studies |
+| [Render](#render-blueprint) | ~$21 | Low | Small-medium studies |
+| [Docker Compose](#docker-compose-self-hosted) | ~$6-12 (VPS) | Medium | Institutional servers, privacy requirements |
+| [AWS (Terraform)](#aws-advanced) | ~$30-50 | High | Large-scale production, existing AWS infrastructure |
+
+---
+
+## Railway (One-Click)
+
+The fastest way to deploy. See the full guide: [One-Click Deploy](../getting-started/one-click-deploy.md).
+
+<!-- TODO: Replace with actual Railway template URL -->
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/template/TEMPLATE_ID)
+
+Railway deploys all four services (API, Frontend, RL, PostgreSQL) from a template. Environment variables auto-configure. Demo data seeds on first boot.
+
+---
+
+## Render (Blueprint)
+
+This repository includes a `render.yaml` Blueprint that defines all services.
+
+1. Log in to [Render](https://render.com)
+2. Click "New" → "Blueprint"
+3. Connect the `augmed-api-v2` repository
+4. Render will detect `render.yaml` and configure all services automatically
+
+The Blueprint creates: API (web service), Frontend (web service), RL service (web service), and PostgreSQL database. Secrets are auto-generated.
+
+---
+
+## Docker Compose (Self-Hosted)
+
+See the full guide: [Self-Hosted Deploy](../getting-started/self-hosted-deploy.md).
+
+```bash
+git clone https://github.com/DHEPLab/augmed-api-v2.git
+git clone https://github.com/DHEPLab/augmed-app-v2.git
+git clone https://github.com/DHEPLab/augmed-rl.git
+cd augmed-api-v2
+docker compose -f docker-compose.full.yml up --build
+```
+
+Access at `http://localhost:8080`. For production VPS deployment, add a reverse proxy (Caddy/nginx) for HTTPS.
+
+---
+
+## AWS (Advanced)
+
+For teams with existing AWS infrastructure or large-scale production needs. This is the original deployment method and remains fully supported.
+
+### Infrastructure Overview
 
 Production infrastructure is managed via Terraform and lives in the [augmed-infra](https://github.com/DHEPLab/augmed-infra) repository. The main components are:
 
@@ -93,6 +148,10 @@ The Flask API reads configuration from environment variables. In production, the
 | `POSTGRES_DB` | Yes | Database name |
 | `POSTGRES_HOST` | Yes | Database host (used by export scripts) |
 | `POSTGRES_PORT` | No | Database port (default: 5432) |
+| `EXPORT_API_KEY` | Yes | API key for the export endpoint (used by RL service for service-to-service auth) |
+| `CORS_ORIGINS` | No | Comma-separated allowed origins, or `*` for all (default: `*`) |
+| `SEED_DEMO_DATA` | No | Set to `true` to seed demo data on first boot (default: `false`) |
+| `GUNICORN_WORKERS` | No | Number of gunicorn worker processes (default: 2) |
 
 ### Updating Secrets
 
@@ -110,16 +169,16 @@ Then update the ECS task definition to reference the new parameter version and r
 
 ## Docker Configuration
 
-The `Dockerfile` at the project root builds the API image:
+The `Dockerfile` at the project root builds the API image. The container uses `entrypoint.sh` which runs database migrations, optionally seeds demo data, and starts gunicorn (production WSGI server).
 
 ```dockerfile
 # Key build steps (abbreviated — see actual Dockerfile for full content)
 FROM python:3.11-slim
-WORKDIR /app
+WORKDIR /usr/src/app
 COPY Pipfile Pipfile.lock ./
-RUN pip install pipenv && pipenv install --system --deploy
+RUN pip install pipenv && pipenv install --deploy --ignore-pipfile
 COPY . .
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+CMD ["/usr/src/app/entrypoint.sh"]
 ```
 
 Build locally:

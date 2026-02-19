@@ -1,0 +1,52 @@
+services:
+  - type: web
+    name: augmed-api
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/healthcheck
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: augmed-db
+          property: connectionString
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: EXPORT_API_KEY
+        generateValue: true
+      - key: SEED_DEMO_DATA
+        value: "true"
+
+  - type: web
+    name: augmed-rl
+    runtime: docker
+    repo: https://github.com/DHEPLab/augmed-rl
+    plan: starter
+    envVars:
+      - key: AUGMED_RL_AUGMED_API_URL
+        fromService:
+          name: augmed-api
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: AUGMED_RL_AUGMED_API_KEY
+        fromService:
+          name: augmed-api
+          type: web
+          envVarKey: EXPORT_API_KEY
+
+  - type: web
+    name: augmed-app
+    runtime: docker
+    repo: https://github.com/DHEPLab/augmed-app-v2
+    plan: starter
+    envVars:
+      - key: API_URL
+        fromService:
+          name: augmed-api
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: PORT
+        value: "8080"
+
+databases:
+  - name: augmed-db
+    plan: basic-256mb

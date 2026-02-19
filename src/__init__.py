@@ -5,7 +5,7 @@ from flask_json_schema import JsonSchema
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate, upgrade
 from flask_sqlalchemy import SQLAlchemy
-# from flask_cors import CORS
+from flask_cors import CORS
 
 from src.common.exception.exception_handlers import register_error_handlers
 
@@ -16,13 +16,6 @@ jwt = JWTManager()
 
 def create_app(config_object=None):
     app = Flask(__name__)
-    #
-    # CORS(
-    #     app,
-    #     origins=["http://localhost:3000"],
-    #     supports_credentials=True,
-    #     expose_headers=["Authorization"],
-    # )
 
     # Allow custom configuration for testing
     if config_object:
@@ -31,6 +24,17 @@ def create_app(config_object=None):
         # Default configuration setup from config.py
         # TODO: load from object not file ref.
         app.config.from_object("src.config.Config")
+
+    # Enable CORS — configurable via CORS_ORIGINS env var
+    cors_origins = app.config.get("CORS_ORIGINS", "http://localhost:3000,http://localhost:8080")
+    if isinstance(cors_origins, str):
+        cors_origins = [o.strip() for o in cors_origins.split(",")]
+    CORS(
+        app,
+        origins=cors_origins,
+        supports_credentials=True,
+        expose_headers=["Authorization"],
+    )
 
     schema.init_app(app)
     db.init_app(app)

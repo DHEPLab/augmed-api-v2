@@ -4,6 +4,20 @@ AugMed is a web application, built for the UNC-Chapel Hill DHEP Lab, that allows
 
 **Live Website**: **[https://augmed1.dhep.org/](https://augmed1.dhep.org/).**
 
+## Quick Deploy
+
+Deploy your own AugMed instance with one click. Each option deploys the full platform (API + Frontend + RL service + PostgreSQL) with demo data pre-loaded.
+
+| Option | Cost | Setup |
+|--------|------|-------|
+| **Railway** (recommended) | ~$5-8/mo | One click, zero config |
+| **Render** | ~$21/mo | One click, minimal config |
+| **Docker Compose** | Free (local) | `docker compose up` |
+
+- [One-Click Deploy Guide (Railway)](docs/getting-started/one-click-deploy.md)
+- [Self-Hosted Deploy Guide (Docker Compose)](docs/getting-started/self-hosted-deploy.md)
+- [Development Setup](docs/getting-started/quick-start.md)
+
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)

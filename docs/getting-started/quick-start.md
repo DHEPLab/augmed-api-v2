@@ -1,6 +1,8 @@
-# Quick Start Guide
+# Quick Start Guide (Development Setup)
 
 This guide walks you through setting up a local AugMed instance for development or testing. You will have a running API server, a connected database, and a test user able to review cases.
+
+> **Just want to try AugMed?** If you don't need a development environment, use the [One-Click Deploy](one-click-deploy.md) (Railway, ~5 minutes) or [Self-Hosted Deploy](self-hosted-deploy.md) (Docker Compose, ~10 minutes) instead. This guide is for developers who want to run the services outside of Docker.
 
 ## Prerequisites
 
@@ -32,7 +34,7 @@ cd augmed-api-v2
 If you also want the frontend:
 
 ```bash
-git clone https://github.com/DHEPLab/augmed-app.git
+git clone https://github.com/DHEPLab/augmed-app-v2.git
 ```
 
 ## Step 2: Configure Environment Variables
@@ -58,6 +60,9 @@ JWT_SECRET_KEY=your-local-secret-key-change-me
 # Token expiry (in seconds); defaults to 3 days if not set
 JWT_ACCESS_TOKEN_EXPIRES=259200
 JWT_REFRESH_TOKEN_EXPIRES=259200
+
+# API key for the export/RL service endpoint (service-to-service auth)
+EXPORT_API_KEY=your-export-api-key
 ```
 
 > **Note:** Never commit `.env` files to version control. The `.gitignore` should already exclude them.
@@ -125,7 +130,7 @@ curl http://localhost:5000/api/healthcheck
 If you cloned the frontend repository:
 
 ```bash
-cd augmed-app
+cd augmed-app-v2
 npm install
 npm start
 ```
@@ -136,7 +141,22 @@ The frontend will start at `http://localhost:3000`. It expects the API at `http:
 
 ## Step 8: Load Sample Data
 
-Before participants can review cases, you need OMOP clinical data in the database. The `script/sample_data/` directory contains sample CSV files:
+Before participants can review cases, you need clinical data in the database. You have two options:
+
+### Option A: Seed Demo Data (Recommended for Quick Start)
+
+Run the demo seed script to create synthetic cases, users, and configurations:
+
+```bash
+export PYTHONPATH=$(pwd)
+pipenv run python -m script.seed.seed_demo
+```
+
+This creates 3 synthetic cases, 2 demo users (admin and researcher), and all necessary configuration. You can skip Steps 9-11 and log in immediately with `researcher@demo.augmed.org` / `augmed-demo`.
+
+### Option B: Load OMOP CSV Data
+
+For real (de-identified) clinical data, the `script/sample_data/` directory contains CSV templates in OMOP format:
 
 ```
 script/sample_data/
@@ -148,13 +168,7 @@ script/sample_data/
 └── procedure_occurrence.csv
 ```
 
-Load the sample data using the load script:
-
-```bash
-bash src/load_omop.sh
-```
-
-> **Note:** The sample data script may require adjustments to match your local database credentials. Check the script for the connection details and update them to match your `.env`.
+Load the data using the SQL load scripts in `script/`. You will also need to set up a `page_config` in the `system_config` table and upload an answer config via the admin API. See [Creating Experiments](../researcher-guide/creating-experiments.md) for the full workflow.
 
 ## Step 9: Create Test Users
 
