@@ -23,7 +23,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-augmed-dev}
       POSTGRES_DB: augmed
     ports:
-      - "5432:5432"
+      - "${DB_HOST_PORT:-5433}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -44,7 +44,7 @@ services:
       SEED_DEMO_DATA: ${SEED_DEMO_DATA:-true}
       PORT: 5000
     ports:
-      - "5000:5000"
+      - "${API_HOST_PORT:-5001}:5000"
 
   rl:
     build:

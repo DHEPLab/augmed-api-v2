@@ -4,13 +4,12 @@ FROM python:3.12-slim
 # Set the working directory in the container
 WORKDIR /usr/src/app
 
-# Install pipenv
+# Install pipenv and create venv inside project dir (survives USER switch)
+ENV PIPENV_VENV_IN_PROJECT=1
 RUN pip install pipenv
 
 # Copy the Pipfile and Pipfile.lock into the container
 COPY Pipfile Pipfile.lock ./
-
-RUN pipenv --python `which python3`
 
 # Install project dependencies
 RUN pipenv install --deploy --ignore-pipfile
