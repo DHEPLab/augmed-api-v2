@@ -190,3 +190,85 @@ def test_invalid_top_config_on_root_node_should_raises_exception():
     assert "Error while processing csv file, please check again." in str(
         excinfo.value.error.value
     )
+
+
+# --- Experiment metadata column tests ---
+
+
+def test_parse_csv_with_experiment_metadata_columns():
+    stream = StringIO()
+    writer = csv.writer(stream, delimiter=",")
+    writer.writerow(["User", "Case No.", "Path", "Collapse", "Highlight", "Top", "Experiment", "Arm", "Policy"])
+    writer.writerow(["alice@example.com", "1", "Background.abc", "TRUE", "True", 1, "eval_001", "learned", "thompson_v1"])
+    writer.writerow(["alice@example.com", "1", "Background.xyz", "FALSE", "False", "", "eval_001", "learned", "thompson_v1"])
+    stream.seek(0)
+
+    result = parse_csv_stream_to_configurations(stream)
+    assert len(result) == 1
+
+    config = result[0]
+    assert config.experiment_id == "eval_001"
+    assert config.arm == "learned"
+    assert config.policy_id == "thompson_v1"
+    assert len(config.path_config) == 2
+
+
+def test_parse_csv_without_experiment_metadata_columns():
+    """Backward compatibility: original 6-column format still works."""
+    stream = StringIO()
+    writer = csv.writer(stream, delimiter=",")
+    writer.writerow(["User", "Case No.", "Path", "Collapse", "Highlight", "Top"])
+    writer.writerow(["alice@example.com", "1", "Background.abc", "TRUE", "True", 1])
+    stream.seek(0)
+
+    result = parse_csv_stream_to_configurations(stream)
+    assert len(result) == 1
+
+    config = result[0]
+    assert config.experiment_id is None
+    assert config.arm is None
+    assert config.policy_id is None
+
+
+def test_parse_csv_with_partial_experiment_metadata():
+    """Only some metadata columns present."""
+    stream = StringIO()
+    writer = csv.writer(stream, delimiter=",")
+    writer.writerow(["User", "Case No.", "Path", "Collapse", "Highlight", "Top", "Experiment"])
+    writer.writerow(["alice@example.com", "1", "Background.abc", "TRUE", "True", "", "eval_001"])
+    stream.seek(0)
+
+    result = parse_csv_stream_to_configurations(stream)
+    assert len(result) == 1
+
+    config = result[0]
+    assert config.experiment_id == "eval_001"
+    assert config.arm is None
+    assert config.policy_id is None
+
+
+def test_parse_csv_metadata_from_first_row_per_bucket():
+    """Metadata is captured from the first row of each (user, case) bucket."""
+    stream = StringIO()
+    writer = csv.writer(stream, delimiter=",")
+    writer.writerow(["User", "Case No.", "Path", "Collapse", "Highlight", "Top", "Experiment", "Arm", "Policy"])
+    writer.writerow(["alice@example.com", "1", "Background.abc", "", "", "", "eval_001", "arm_a", "policy_1"])
+    writer.writerow(["alice@example.com", "1", "Background.xyz", "", "", "", "eval_002", "arm_b", "policy_2"])  # Different metadata, ignored
+    writer.writerow(["bob@example.com", "2", "Background.abc", "", "", "", "eval_001", "arm_b", "policy_1"])
+    stream.seek(0)
+
+    result = parse_csv_stream_to_configurations(stream)
+    assert len(result) == 2
+
+    alice_config = next(c for c in result if c.user_email == "alice@example.com")
+    bob_config = next(c for c in result if c.user_email == "bob@example.com")
+
+    # Alice gets metadata from her first row
+    assert alice_config.experiment_id == "eval_001"
+    assert alice_config.arm == "arm_a"
+    assert alice_config.policy_id == "policy_1"
+
+    # Bob gets his own metadata
+    assert bob_config.experiment_id == "eval_001"
+    assert bob_config.arm == "arm_b"
+    assert bob_config.policy_id == "policy_1"

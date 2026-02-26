@@ -53,6 +53,8 @@ def create_app(config_object=None):
         from src.cases.controller.case_controller import case_blueprint
         from src.configration.controller.answer_config_controller import (
             admin_answer_config_blueprint, answer_config_blueprint)
+        from src.configration.controller.config_upload_controller import (
+            admin_config_upload_blueprint, api_config_upload_blueprint)
         from src.health.healthCheckController import healthcheck_blueprint
         from src.user.controller.auth_controller import auth_blueprint
         from src.user.controller.config_controller import config_blueprint
@@ -62,6 +64,7 @@ def create_app(config_object=None):
         from src.experiment.controller.experiment_controller import experiment_blueprint
 
         app.register_blueprint(admin_answer_config_blueprint, url_prefix="/admin")
+        app.register_blueprint(admin_config_upload_blueprint, url_prefix="/admin")
         app.register_blueprint(user_blueprint, url_prefix="/admin")
         app.register_blueprint(config_blueprint, url_prefix="/admin")
 
@@ -73,6 +76,7 @@ def create_app(config_object=None):
         app.register_blueprint(analytics_blueprint)
         app.register_blueprint(export_blueprint, url_prefix="/api/v1/export")
         app.register_blueprint(experiment_blueprint, url_prefix="/api/v1")
+        app.register_blueprint(api_config_upload_blueprint, url_prefix="/api/v1")
 
         register_error_handlers(app)
 

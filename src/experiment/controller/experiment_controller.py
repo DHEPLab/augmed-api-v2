@@ -142,6 +142,8 @@ def batch_create_configs():
             dc.rl_run_id = config_data["rl_run_id"]
         if "arm" in config_data:
             dc.arm = config_data["arm"]
+        if "policy_id" in config_data:
+            dc.policy_id = config_data["policy_id"]
 
         try:
             db.session.add(dc)
