@@ -1,0 +1,61 @@
+name: Test AIM AHEAD API
+
+on:
+  push:
+    branches-ignore:
+      - main
+jobs:
+  init:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: arduino/setup-task@v2
+      - uses: actions/checkout@v4
+      - name: Set up Environment & Install dependencies
+        run: |
+          task install
+
+  test:
+    needs: init
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: arduino/setup-task@v2
+      - uses: actions/checkout@v4
+      - name: format
+        run: |
+          task format    
+      - name: check-secrets
+        uses: secret-scanner/action@0.0.2
+      - name: Lint with flake8
+        run: |
+          task lint
+      - name: Run tests
+        run: |
+          task test
+
+  codeql:
+    needs: init
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      security-events: write
+      packages: read
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: python
+          build-mode: none
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:python"
+

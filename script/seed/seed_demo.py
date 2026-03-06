@@ -348,7 +348,8 @@ def _seed_system_config():
 
 def _seed_answer_config():
     """Insert a demo questionnaire config."""
-    config_id = "demo-answer-config"
+    import uuid
+    config_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, "demo-answer-config"))
     questionnaire = [
         {
             "type": "single_choice",

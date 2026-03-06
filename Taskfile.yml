@@ -3,6 +3,16 @@ env:
   PYTHONPATH: ${PYTHONPATH}:${PWD}
 
 tasks:
+  default:
+    cmds:
+      - task --list-all
+    silent: true
+
+  build:
+    cmds:
+      - docker build --tag augmed-api -f build/Dockerfile .
+    silent: true
+
   install:
     cmds:
       - pip3 install pipenv

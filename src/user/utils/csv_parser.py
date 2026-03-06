@@ -15,6 +15,9 @@ H_PATH = "Path"
 H_COLLAPSE = "Collapse"
 H_HIGHLIGHT = "Highlight"
 H_TOP = "Top"
+H_EXPERIMENT = "Experiment"
+H_ARM = "Arm"
+H_POLICY = "Policy"
 
 
 def is_empty(value):
@@ -48,7 +51,7 @@ def validate_and_convert_top(row: Dict[str, str]) -> float or None:
     top = row.get(H_TOP, "").strip()
 
     if not is_empty(top):
-        # “Top” can’t be set on a root‐level path
+        # "Top" can't be set on a root‐level path
         if len(path.split(".")) < 2:
             raise BusinessException(BusinessExceptionEnum.ConfigFileIncorrect)
         # The top config only allow number as input.
@@ -108,12 +111,14 @@ class CsvConfigurationParser:
         # Step 1: bucket all rows by (user, case_id)
         # Map[(user, case_id)] → List[ (path_string, style_dict) ]
         buckets: Dict[Tuple[str, int], List[Dict[str, object]]] = {}
+        # Track experiment metadata per bucket (from first row seen)
+        metadata: Dict[Tuple[str, int], Dict[str, str]] = {}
 
         for row in self.rows:
             # 1a) Extract user & case_id (or throw on invalid)
             user, case_id = validate_and_extract_user_case(row)
 
-            # 1b) Determine “top” if any
+            # 1b) Determine "top" if any
             top_value = validate_and_convert_top(row)
 
             # 1c) Build style dictionary from Collapse/Highlight/Top
@@ -121,7 +126,7 @@ class CsvConfigurationParser:
             highlight_str = row.get(H_HIGHLIGHT, "").strip()
             style = build_style_dict(collapse_str, highlight_str, top_value)
 
-            # 1d) The “Path” column must always exist (or we skip if empty)
+            # 1d) The "Path" column must always exist (or we skip if empty)
             path = row.get(H_PATH, "").strip()
             if is_empty(path):
                 # No path means nothing to do
@@ -136,13 +141,32 @@ class CsvConfigurationParser:
             key = (user, case_id)
             if key not in buckets:
                 buckets[key] = []
+                # Capture experiment metadata from first row of each bucket
+                meta = {}
+                experiment = row.get(H_EXPERIMENT, "").strip()
+                arm = row.get(H_ARM, "").strip()
+                policy = row.get(H_POLICY, "").strip()
+                if experiment:
+                    meta["experiment_id"] = experiment
+                if arm:
+                    meta["arm"] = arm
+                if policy:
+                    meta["policy_id"] = policy
+                metadata[key] = meta
             buckets[key].append(entry)
 
         # Step 2: For each bucket, create a DisplayConfig
         result: List[DisplayConfig] = []
         for (user, case_id), entries in buckets.items():
-            dc = DisplayConfig(user_email=user, case_id=case_id, path_config=[])
-            dc.path_config = entries[:]  # copy list of {path, style} dicts
+            meta = metadata.get((user, case_id), {})
+            dc = DisplayConfig(
+                user_email=user,
+                case_id=case_id,
+                path_config=entries[:],
+                experiment_id=meta.get("experiment_id"),
+                arm=meta.get("arm"),
+                policy_id=meta.get("policy_id"),
+            )
             result.append(dc)
 
         return result

@@ -4,22 +4,21 @@ FROM python:3.12-slim
 # Set the working directory in the container
 WORKDIR /usr/src/app
 
-# Install pipenv
+# Install pipenv and create venv inside project dir (survives USER switch)
+ENV PIPENV_VENV_IN_PROJECT=1
 RUN pip install pipenv
 
 # Copy the Pipfile and Pipfile.lock into the container
 COPY Pipfile Pipfile.lock ./
 
-RUN pipenv --python `which python3`
-
 # Install project dependencies
 RUN pipenv install --deploy --ignore-pipfile
 
 # Copy the rest of your application's code
-COPY . .
+COPY ../ .
 
 # Copy and set entrypoint
-COPY entrypoint.sh /usr/src/app/entrypoint.sh
+COPY build/entrypoint.sh /usr/src/app/entrypoint.sh
 RUN chmod +x /usr/src/app/entrypoint.sh
 
 # Run as non-root user for security
