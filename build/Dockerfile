@@ -15,10 +15,10 @@ COPY Pipfile Pipfile.lock ./
 RUN pipenv install --deploy --ignore-pipfile
 
 # Copy the rest of your application's code
-COPY . .
+COPY ../ .
 
 # Copy and set entrypoint
-COPY entrypoint.sh /usr/src/app/entrypoint.sh
+COPY build/entrypoint.sh /usr/src/app/entrypoint.sh
 RUN chmod +x /usr/src/app/entrypoint.sh
 
 # Run as non-root user for security
