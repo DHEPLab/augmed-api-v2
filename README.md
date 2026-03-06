@@ -4,6 +4,8 @@ AugMed is a clinical case review platform for research on AI-augmented medical d
 
 **Live Website**: **[https://augmed1.dhep.org/](https://augmed1.dhep.org/).**
 
+## Quick Start
+
 ## Quick Deploy
 
 Deploy your own AugMed instance with one click. Each option deploys the full platform (API + Frontend + RL service + PostgreSQL) with demo data pre-loaded.
