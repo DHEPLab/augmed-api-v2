@@ -40,7 +40,10 @@ class AuthService:
         if not verify(login_request.password, user.salt, user.password):
             raise BusinessException(BusinessExceptionEnum.UserPasswordIncorrect)
 
-        additional_claims = {"last_login_time": datetime.now().isoformat()}
+        additional_claims = {
+            "last_login_time": datetime.now().isoformat(),
+            "admin_flag": bool(user.admin_flag),
+        }
         access_token = create_access_token(
             identity=user.email, additional_claims=additional_claims, fresh=True
         )
